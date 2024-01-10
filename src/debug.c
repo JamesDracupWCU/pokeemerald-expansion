@@ -1176,14 +1176,14 @@ static u8 Debug_CheckToggleFlags(u8 id)
                 FlagGet(FLAG_LANDMARK_BATTLE_FRONTIER);
             break;
         case DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_BADGES_ALL:
-            result = FlagGet(FLAG_BADGE01_GET) &&
-                FlagGet(FLAG_BADGE02_GET) &&
-                FlagGet(FLAG_BADGE03_GET) &&
-                FlagGet(FLAG_BADGE04_GET) &&
-                FlagGet(FLAG_BADGE05_GET) &&
-                FlagGet(FLAG_BADGE06_GET) &&
-                FlagGet(FLAG_BADGE07_GET) &&
-                FlagGet(FLAG_BADGE08_GET);
+            result = FlagGet(FLAG_BADGE01_GET); //&&
+                // FlagGet(FLAG_BADGE02_GET) &&
+                // FlagGet(FLAG_BADGE03_GET) &&
+                // FlagGet(FLAG_BADGE04_GET) &&
+                // FlagGet(FLAG_BADGE05_GET) &&
+                // FlagGet(FLAG_BADGE06_GET) &&
+                // FlagGet(FLAG_BADGE07_GET) &&
+                // FlagGet(FLAG_BADGE08_GET);
             break;
         case DEBUG_FLAGVAR_MENU_ITEM_TOGGLE_FRONTIER_PASS:
             result = FlagGet(FLAG_SYS_FRONTIER_PASS);
