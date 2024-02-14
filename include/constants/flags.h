@@ -1344,7 +1344,7 @@
 #define SYSTEM_FLAGS                                   (TRAINER_FLAGS_END + 1) // 0x860
 
 #define FLAG_SYS_POKEMON_GET                         (SYSTEM_FLAGS + 0x0) // FLAG_0x860
-#define FLAG_SYS_POKEDEX_GET                         (SYSTEM_FLAGS + 0x1)
+#define FLAG_SYS_POKEDEX_GET                         (SYSTEM_FLAGS + 0x1) // 0_861
 #define FLAG_SYS_POKENAV_GET                         (SYSTEM_FLAGS + 0x2)
 #define FLAG_UNUSED_0x863                            (SYSTEM_FLAGS + 0x3) // Unused Flag
 #define FLAG_SYS_GAME_CLEAR                          (SYSTEM_FLAGS + 0x4)
@@ -1352,9 +1352,9 @@
 #define FLAG_UNLOCKED_TRENDY_SAYINGS                 (SYSTEM_FLAGS + 0x6)
 
 // Badges
-#define FLAG_BADGE01_GET                             (SYSTEM_FLAGS + 0x7)
+#define FLAG_BADGE01_GET                             (SYSTEM_FLAGS + 0x7) //0x867
 #define FLAG_BADGE02_GET                             (SYSTEM_FLAGS + 0x8)
-#define FLAG_BADGE03_GET                             (SYSTEM_FLAGS + 0x9)
+#define FLAG_BADGE03_GET                             (SYSTEM_FLAGS + 0x9) //0x869
 #define FLAG_BADGE04_GET                             (SYSTEM_FLAGS + 0xA)
 #define FLAG_BADGE05_GET                             (SYSTEM_FLAGS + 0xB)
 #define FLAG_BADGE06_GET                             (SYSTEM_FLAGS + 0xC)
