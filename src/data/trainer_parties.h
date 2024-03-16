@@ -3206,6 +3206,13 @@ static const struct TrainerMon sParty_Drake[] = {
 
 static const struct TrainerMon sParty_Roxanne1[] = {
     {
+     .iv = TRAINER_PARTY_IVS(12, 12, 12, 12, 12, 12),
+    .lvl = 12,
+    .species = SPECIES_DARKRAI,
+    .heldItem = ITEM_NONE,
+    .moves = {MOVE_DREAM_EATER, MOVE_HYPNOSIS, MOVE_SHADOW_BALL, MOVE_DARK_VOID}   
+    },
+    {
     .iv = TRAINER_PARTY_IVS(12, 12, 12, 12, 12, 12),
     .lvl = 12,
     .species = SPECIES_GEODUDE,

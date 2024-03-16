@@ -442,7 +442,7 @@ void RecordKnownMove(u32 battlerId, u32 move)
         }
     }
     // Print the species name
-     DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon is: %S", GetSpeciesName(species));
+    DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon is: %S", GetSpeciesName(species));
     // Pokemons Type(s) (Can be dual type)
     DebugPrintfLevel(MGBA_LOG_WARN, "Type(s): ");
     for (int j = 0; j < 2; j++) {
