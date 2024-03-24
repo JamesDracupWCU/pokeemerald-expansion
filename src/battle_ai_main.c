@@ -52,6 +52,7 @@ static s32 AI_Roaming(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_Safari(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_FirstBattle(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_DoubleBattle(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
+static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 
 static s32 (*const sBattleAiFuncTable[])(u32, u32, u32, s32) =
 {
@@ -74,7 +75,7 @@ static s32 (*const sBattleAiFuncTable[])(u32, u32, u32, s32) =
     [16] = NULL,                     // Unused
     [17] = NULL,                     // Unused
     [18] = NULL,                     // Unused
-    [19] = NULL,                     // Unused
+    [19] = AI_ADAPTIVE_AI,      // AI_FLAG_Adaptive_AI Flag
     [20] = NULL,                     // Unused
     [21] = NULL,                     // Unused
     [22] = NULL,                     // Unused
@@ -5325,4 +5326,8 @@ static s32 AI_FirstBattle(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
         AI_Flee();
 
     return score;
+}
+
+static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score){
+    return 0;
 }

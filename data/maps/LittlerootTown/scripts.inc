@@ -913,8 +913,47 @@ LittlerootTown_EventScript_Steven::
 	msgbox LittlerootTown_Text_TalkToSteven, MSGBOX_NPC
 	end
 
+LittlerootTown_EventScript_RoxanneBadgeCheck::
+	lock
+	faceplayer
+	switch VAR_0x8004
+	case 0 LittlerootTown_EventScript_RoxanneNoBadge
+	case 1 LittlerootTown_EventScript_RoxanneFirstBadge
+	case 2 LittlerootTown_EventScript_RoxanneSecondBadge
+    end
+
 LittlerootTown_EventScript_Roxanne::
+	call LittlerootTown_EventScript_RoxanneBadgeCheck
+	end
+
+LittlerootTown_EventScript_RoxanneNoBadge::
+	call_if_set FLAG_BADGE01_GET, LittlerootTown_EventScript_RoxanneFirstBadge
 	trainerbattle_single TRAINER_ROXANNE_1, LittlerootTown_Text_RoxanneIntro, LittlerootTown_Text_RoxanneDefeat, LittlerootTown_EventScript_RoxanneDefeated, NO_MUSIC
+	setvar VAR_0x8004, 1
+	specialvar VAR_RESULT, ShouldTryRematchBattle
+	goto_if_eq VAR_RESULT, TRUE, LittlerootTown_EventScript_RoxanneRematch
+	goto_if_unset FLAG_RECEIVED_TM_ROCK_TOMB, LittlerootTown_EventScript_GiveRockTomb
+	msgbox LittlerootTown_Text_RoxannePostBattle, MSGBOX_DEFAULT
+	release
+	end
+
+LittlerootTown_EventScript_RoxanneFirstBadge::
+	call_if_set FLAG_BADGE02_GET, LittlerootTown_EventScript_RoxanneSecondBadge
+	msgbox LittlerootTown_Text_OneBadge, MSGBOX_DEFAULT
+	trainerbattle_single TRAINER_ROXANNE_2, LittlerootTown_Text_RoxanneIntro, LittlerootTown_Text_RoxanneDefeat, LittlerootTown_EventScript_RoxanneDefeated, NO_MUSIC
+	setvar VAR_0x8004, 2
+	specialvar VAR_RESULT, ShouldTryRematchBattle
+	goto_if_eq VAR_RESULT, TRUE, LittlerootTown_EventScript_RoxanneRematch
+	goto_if_unset FLAG_RECEIVED_TM_ROCK_TOMB, LittlerootTown_EventScript_GiveRockTomb
+	msgbox LittlerootTown_Text_RoxannePostBattle, MSGBOX_DEFAULT
+	release
+	end
+
+LittlerootTown_EventScript_RoxanneSecondBadge::
+	call_if_set FLAG_BADGE03_GET, LittlerootTown_EventScript_RoxanneFirstBadge
+	msgbox LittlerootTown_Text_TwoBadge, MSGBOX_DEFAULT
+	trainerbattle_single TRAINER_ROXANNE_3, LittlerootTown_Text_RoxanneIntro, LittlerootTown_Text_RoxanneDefeat, LittlerootTown_EventScript_RoxanneDefeated, NO_MUSIC
+	setvar VAR_0x8004, 3
 	specialvar VAR_RESULT, ShouldTryRematchBattle
 	goto_if_eq VAR_RESULT, TRUE, LittlerootTown_EventScript_RoxanneRematch
 	goto_if_unset FLAG_RECEIVED_TM_ROCK_TOMB, LittlerootTown_EventScript_GiveRockTomb
@@ -949,6 +988,12 @@ LittlerootTown_EventScript_RoxanneRematch::
 	trainerbattle_rematch_double TRAINER_ROXANNE_1, LittlerootTown_Text_RoxannePreRematch, LittlerootTown_Text_RoxanneRematchDefeat, LittlerootTown_Text_RoxanneRematchNeedTwoMons
 	msgbox LittlerootTown_Text_RoxannePostRematch, MSGBOX_AUTOCLOSE
 	end
+
+LittlerootTown_Text_OneBadge:
+	.string "I have one Badge.$"
+
+LittlerootTown_Text_TwoBadge:
+	.string "I have two Badges.$"
 
 LittlerootTown_Text_OurNewHomeLetsGoInside:
 	.string "MOM: {PLAYER}, we're here, honey!\p"
