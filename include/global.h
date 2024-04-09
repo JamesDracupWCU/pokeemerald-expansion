@@ -6,11 +6,8 @@
 #include "config.h" // we need to define config before gba headers as print stuff needs the functions nulled before defines.
 #include "gba/gba.h"
 #include "fpmath.h"
-<<<<<<< HEAD
 #include "gba/isagbprint.h"
-=======
 #include "metaprogram.h"
->>>>>>> 656dd5f172dee3fc659ce771c321cc57895b3645
 #include "constants/global.h"
 #include "constants/flags.h"
 #include "constants/vars.h"
@@ -21,12 +18,9 @@
 #include "constants/pokemon.h"
 #include "constants/easy_chat.h"
 #include "constants/trainer_hill.h"
-<<<<<<< HEAD
 #include <stdio.h>
-=======
 #include "constants/items.h"
 #include "config/save.h"
->>>>>>> 656dd5f172dee3fc659ce771c321cc57895b3645
 
 // Prevent cross-jump optimization.
 #define BLOCK_CROSS_JUMP asm("");

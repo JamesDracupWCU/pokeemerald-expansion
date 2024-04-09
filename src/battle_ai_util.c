@@ -117,19 +117,20 @@ void RecordKnownMove(u32 battlerId, u32 move)
     // Print the species name
     DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon is: %S", GetSpeciesName(species));
     // Pokemons Type(s) (Can be dual type)
-    DebugPrintfLevel(MGBA_LOG_WARN, "Type(s): ");
-    for (int j = 0; j < 2; j++) {
-        if (AI_THINKING_STRUCT->saved[battlerId].types[j] != TYPE_NONE) {
-            DebugPrintfLevel(MGBA_LOG_WARN, "%S ", gTypeNames[AI_THINKING_STRUCT->saved[battlerId].types[j]]);
+    DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon Type(s): ");
+    for (int j = 0; j < 1; j++) {
+        if (BATTLE_HISTORY->usedMoves[battlerId][j] != TYPE_NONE) {
+            DebugPrintfLevel(MGBA_LOG_WARN, "%S ", gTypesInfo[gBattleMons[battlerId].type1 = gSpeciesInfo[gBattleMons[battlerId].species].types[0]].name);
+            DebugPrintfLevel(MGBA_LOG_WARN, "%S ", gTypesInfo[gBattleMons[battlerId].type1 = gSpeciesInfo[gBattleMons[battlerId].species].types[1]].name);
         }
     }
-    DebugPrintfLevel(MGBA_LOG_WARN, "Moved Used: %S", gMoveNames[BATTLE_HISTORY->usedMoves[battlerId][i]]); //Keep this!!! 
+    DebugPrintfLevel(MGBA_LOG_WARN, "Moved Used: %S", gMovesInfo[BATTLE_HISTORY->usedMoves[battlerId][i]]); //Keep this!!! 
     // Print the types of the moves used (Mono-only)
     DebugPrintfLevel(MGBA_LOG_WARN, "Moves Type: ");
-    for (int j = 0; j < MAX_MON_MOVES; j++) {
-        if (BATTLE_HISTORY->usedMoves[battlerId][j] != MOVE_NONE) {
-            //u16 moveType = gBattleMoves[BATTLE_HISTORY->usedMoves[battlerId][j]].type;
-            DebugPrintfLevel(MGBA_LOG_WARN, "%S ", gTypeNames[gBattleMoves[BATTLE_HISTORY->usedMoves[battlerId][j]].type]);
+   for (int j = 0; j < 1; j++) {
+        if (move != MOVE_NONE) {
+            u16 moveType = gMovesInfo[move].type;
+            DebugPrintfLevel(MGBA_LOG_WARN, "%S ", gTypesInfo[moveType].name);
         }
     }
 }

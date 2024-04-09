@@ -3,6 +3,7 @@
 #include "load_save.h"
 #include "battle_setup.h"
 #include "battle_transition.h"
+#include "pokemon.h"
 #include "main.h"
 #include "task.h"
 #include "safari_zone.h"

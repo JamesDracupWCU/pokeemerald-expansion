@@ -858,12 +858,45 @@
 #define TRAINER_LEAF                        852
 #define TRAINER_BRENDAN_PLACEHOLDER         853
 #define TRAINER_MAY_PLACEHOLDER             854
+// Four Additional TRAINER sets for Gym Leaders for Open-World Implementation
+#define TRAINER_ROXANNE_6                   855 // Usually 855 to 886
+#define TRAINER_ROXANNE_7                   856
+#define TRAINER_ROXANNE_8                   857
+#define TRAINER_BRAWLY_6                    858
+#define TRAINER_BRAWLY_7                    859
+#define TRAINER_BRAWLY_8                    860
+#define TRAINER_WATTSON_6                   861
+#define TRAINER_WATTSON_7                   862
+#define TRAINER_WATTSON_8                   863
+#define TRAINER_FLANNERY_6                  864
+#define TRAINER_FLANNERY_7                  865
+#define TRAINER_FLANNERY_8                  866
+#define TRAINER_NORMAN_6                    867
+#define TRAINER_NORMAN_7                    868
+#define TRAINER_NORMAN_8                    869
+#define TRAINER_WINONA_6                    870
+#define TRAINER_WINONA_7                    871
+#define TRAINER_WINONA_8                    872
+#define TRAINER_TATE_AND_LIZA_6             873
+#define TRAINER_TATE_AND_LIZA_7             874
+#define TRAINER_TATE_AND_LIZA_8             875
+#define TRAINER_JUAN_6                      876
+#define TRAINER_JUAN_7                      877
+#define TRAINER_JUAN_8                      878
+#define TRAINER_ROXANNE_8_POST              879
+#define TRAINER_BRAWLY_8_POST               880
+#define TRAINER_WATTSON_8_POST              881
+#define TRAINER_FLANNERY_8_POST             882
+#define TRAINER_NORMAN_8_POST               883
+#define TRAINER_WINONA_8_POST               884
+#define TRAINER_TATE_AND_LIZA_8_POST        885
+#define TRAINER_JUAN_8_POST                 886
 
 // NOTE: Because each Trainer uses a flag to determine when they are defeated, there is only space for 9 additional trainers before trainer flag space overflows
 //       More space can be made by shifting flags around in constants/flags.h or changing how trainer flags are handled
 //       MAX_TRAINERS_COUNT can be increased but will take up additional saveblock space
 
-#define TRAINERS_COUNT                      855
+#define TRAINERS_COUNT                      886
 #define MAX_TRAINERS_COUNT                  864
 #define TRAINER_PARTNER(partner)           (MAX_TRAINERS_COUNT + partner)
 

@@ -53,12 +53,8 @@ static s32 AI_Roaming(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_Safari(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_FirstBattle(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_DoubleBattle(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
-<<<<<<< HEAD
 static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
-=======
 static s32 AI_PowerfulStatus(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
-
->>>>>>> 656dd5f172dee3fc659ce771c321cc57895b3645
 
 static s32 (*const sBattleAiFuncTable[])(u32, u32, u32, s32) =
 {
@@ -4609,27 +4605,6 @@ static u32 AI_CalcMoveScore(u32 battlerAtk, u32 battlerDef, u32 move)
         return BEST_MOVE_EFFECTS;
 }
 
-// AI_FLAG_CHECK_VIABILITY - Chooses best possible move to hit player
-static s32 AI_CheckViability(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
-{
-    // Targeting partner, check benefits of doing that instead
-    if (IS_TARGETING_PARTNER(battlerAtk, battlerDef))
-        return score;
-
-    if (gMovesInfo[move].power)
-    {
-        if (GetNoOfHitsToKOBattler(battlerAtk, battlerDef, AI_THINKING_STRUCT->movesetIndex) == 0)
-            ADJUST_SCORE(-20);
-        else
-            score += AI_CompareDamagingMoves(battlerAtk, battlerDef, AI_THINKING_STRUCT->movesetIndex);
-    }
-
-    // Calculates score based on effects of a move
-    score += AI_CalcMoveScore(battlerAtk, battlerDef, move);
-
-    return score;
-}
-
 // Effects that are encouraged on the first turn of battle
 static s32 AI_SetupFirstTurn(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
 {
@@ -5202,6 +5177,31 @@ static s32 AI_FirstBattle(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
     return score;
 }
 
-static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score){
-    return 0;
+// AI_FLAG_CHECK_VIABILITY - Chooses best possible move to hit player
+static s32 AI_CheckViability(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
+{
+    // Targeting partner, check benefits of doing that instead
+    if (IS_TARGETING_PARTNER(battlerAtk, battlerDef))
+        return score;
+
+    if (gMovesInfo[move].power)
+    {
+        if (GetNoOfHitsToKOBattler(battlerAtk, battlerDef, AI_THINKING_STRUCT->movesetIndex) == 0)
+            ADJUST_SCORE(-20);
+        else
+            score += AI_CompareDamagingMoves(battlerAtk, battlerDef, AI_THINKING_STRUCT->movesetIndex);
+    }
+
+    // Calculates score based on effects of a move
+    score += AI_CalcMoveScore(battlerAtk, battlerDef, move);
+    //DebugPrintfLevel(MGBA_LOG_WARN, "Move: %S", gMovesInfo[move].name);
+    //DebugPrintfLevel(MGBA_LOG_WARN, "Move Score: %d", score);
+    return score;
+}
+
+// Store all moves used from both sides during battle.
+// Also store the Damage or effect for each move respectively
+// 
+static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score){  
+    return score;
 }

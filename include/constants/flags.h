@@ -1298,21 +1298,21 @@
 #define FLAG_UNUSED_0x4E0                                           0x4E0 // Unused Flag
 #define FLAG_UNUSED_0x4E1                                           0x4E1 // Unused Flag
 #define FLAG_UNUSED_0x4E2                                           0x4E2 // Unused Flag
-#define FLAG_UNUSED_0x4E3                                           0x4E3 // Unused Flag
-#define FLAG_UNUSED_0x4E4                                           0x4E4 // Unused Flag
-#define FLAG_UNUSED_0x4E5                                           0x4E5 // Unused Flag
-#define FLAG_UNUSED_0x4E6                                           0x4E6 // Unused Flag
-#define FLAG_UNUSED_0x4E7                                           0x4E7 // Unused Flag
-#define FLAG_UNUSED_0x4E8                                           0x4E8 // Unused Flag
-#define FLAG_UNUSED_0x4E9                                           0x4E9 // Unused Flag
-#define FLAG_UNUSED_0x4EA                                           0x4EA // Unused Flag
-#define FLAG_UNUSED_0x4EB                                           0x4EB // Unused Flag
-#define FLAG_UNUSED_0x4EC                                           0x4EC // Unused Flag
-#define FLAG_UNUSED_0x4ED                                           0x4ED // Unused Flag
-#define FLAG_UNUSED_0x4EE                                           0x4EE // Unused Flag
-#define FLAG_UNUSED_0x4EF                                           0x4EF // Unused Flag
+#define FLAG_DEFEATED_CHAMPION_WALLACE                              0x4E3 // Unused Flag
+#define FLAG_DEFEATED_DRAKE                                         0x4E4 // Unused Flag
+#define FLAG_DEFEATED_GLACIA                                        0x4E5 // Unused Flag
+#define FLAG_DEFEATED_PHOEBE                                        0x4E6 // Unused Flag
+#define FLAG_DEFEATED_SIDNEY                                        0x4E7 // Unused Flag
+#define FLAG_DEFEATED_JUAN                                          0x4E8 // Defeated Juan
+#define FLAG_DEFEATED_TATE_LIZA                                     0x4E9 // Defeated Tate and Liza
+#define FLAG_DEFEATED_WINONA                                        0x4EA // Defeated Winona
+#define FLAG_DEFEATED_NORMAN                                        0x4EB // Defeated Norman
+#define FLAG_DEFEATED_FLANNERY                                      0x4EC // Defeated Flannery
+#define FLAG_DEFEATED_WATTSON                                       0x4ED // Defeated Wattson
+#define FLAG_DEFEATED_BRAWLY                                        0x4EE // Defeated Brawly
+#define FLAG_DEFEATED_ROXANNE                                       0x4EF // Defeated Roxanne
 
-#define FLAG_DEFEATED_RUSTBORO_GYM                                  0x4F0
+#define FLAG_DEFEATED_RUSTBORO_GYM                                  0x4F0 //Do the same thing as the 8 above but for my visuall understanding
 #define FLAG_DEFEATED_DEWFORD_GYM                                   0x4F1
 #define FLAG_DEFEATED_MAUVILLE_GYM                                  0x4F2
 #define FLAG_DEFEATED_LAVARIDGE_GYM                                 0x4F3
