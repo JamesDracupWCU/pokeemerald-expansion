@@ -1,0 +1,18 @@
+[ERROR] GBA Savedata: Savegame time offset set to 0
+[WARN] GBA Debug: Pokemon Stored: Mudkip (Water,Water)
+[WARN] GBA Debug: - Water Gun
+[ERROR] GBA Savedata: Savegame time offset set to 0
+[WARN] GBA Debug: Pokemon Stored: Mudkip (Water,Water)
+[WARN] GBA Debug: - Tackle
+[WARN] GBA Debug: Pokemon Stored: Geodude (Rock,Ground)
+[WARN] GBA Debug: - Rock Tomb
+[WARN] GBA Debug: Printing SaveBlock3 information for Battler 1:
+[WARN] GBA Debug: Moves Stored:
+[WARN] GBA Debug: Pokemon Stored: Geodude (Rock,Ground)
+[WARN] GBA Debug: - Rock Tomb
+[WARN] GBA Debug: - Defense Curl
+[WARN] GBA Debug: Printing SaveBlock3 information for Battler 0:
+[WARN] GBA Debug: Moves Stored:
+[WARN] GBA Debug: Pokemon Stored: Mudkip (Water,Water)
+[WARN] GBA Debug: - Tackle
+[WARN] GBA Debug: - Water Gun
