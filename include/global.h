@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include "constants/items.h"
 #include "config/save.h"
+//#include "constants/battle.h"
 
 // Prevent cross-jump optimization.
 #define BLOCK_CROSS_JUMP asm("");
@@ -169,8 +170,15 @@ struct UCoords32
     u32 y;
 };
 
+#define MAX_BATTLERS 2
+#define MAX_MON_MOVES 4
+//#define MAX_MON_PARTY 6
 struct SaveBlock3
 {
+    u16 knownMoves[MAX_BATTLERS][MAX_MON_MOVES];
+    u16 knownSpecies[MAX_BATTLERS];
+    u16 knownTyping[MAX_BATTLERS]; //For first type
+    u16 knownTyping2[MAX_BATTLERS]; //For second type
 };
 
 extern struct SaveBlock3 *gSaveBlock3Ptr;
@@ -1002,15 +1010,15 @@ struct SaveBlock1
     /*0x790*/ struct ItemSlot bagPocket_Berries[BAG_BERRIES_COUNT];
     /*0x848*/ struct Pokeblock pokeblocks[POKEBLOCKS_COUNT];
 #if FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1 == FALSE
-    /*0x988*/ u8 filler1[0x34]; // Previously Dex Flags, feel free to remove.
+    /*0x988*/ //u8 filler1[0x34]; // Previously Dex Flags, feel free to remove.
 #endif //FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1
     /*0x9BC*/ u16 berryBlenderRecords[3];
-    /*0x9C2*/ u8 unused_9C2[6];
+    /*0x9C2*/ //u8 unused_9C2[6];
 #if FREE_MATCH_CALL == FALSE
     /*0x9C8*/ u16 trainerRematchStepCounter;
     /*0x9CA*/ u8 trainerRematches[MAX_REMATCH_ENTRIES];
 #endif //FREE_MATCH_CALL
-    /*0xA2E*/ //u8 padding3[2];
+    /*0xA2E*/ u8 padding3[2];
     /*0xA30*/ struct ObjectEvent objectEvents[OBJECT_EVENTS_COUNT];
     /*0xC70*/ struct ObjectEventTemplate objectEventTemplates[OBJECT_EVENT_TEMPLATES_COUNT];
     /*0x1270*/ u8 flags[NUM_FLAG_BYTES];
@@ -1029,7 +1037,7 @@ struct SaveBlock1
     /*0x2798*/ u8 decorationDolls[40];
     /*0x27C0*/ u8 decorationCushions[10];
     /*0x27CC*/ TVShow tvShows[TV_SHOWS_COUNT];
-    /*0x27CA*/ //u8 padding4[2];
+    /*0x27CA*/ u8 padding4[2];
     /*0x2B50*/ PokeNews pokeNews[POKE_NEWS_COUNT];
     /*0x2B90*/ u16 outbreakPokemonSpecies;
     /*0x2B92*/ u8 outbreakLocationMapNum;
