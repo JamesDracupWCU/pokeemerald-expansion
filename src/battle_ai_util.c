@@ -156,7 +156,6 @@ void RecordLastUsedMoveBy(u32 battlerId, u32 move)
     // }
 // }
 
-// Example usage after the battle
 // void afterBattle(u32 battlerId) {
 //     // Call function to print SaveBlock3 information
 //     printSaveBlock3Info(battlerId);
@@ -171,60 +170,37 @@ void RecordKnownMove(u32 battlerId, u32 move) {
             if (BATTLE_HISTORY->usedMoves[battlerId][i] == MOVE_NONE) {
                 BATTLE_HISTORY->usedMoves[battlerId][i] = move;
                 AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].moves[i] = move;
-                //Print the species name
                 //DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon is: %S", GetSpeciesName(species));
-                //Pokemons Type(s) (Can be dual type)
                 gSaveBlock3Ptr->knownMoves[battlerId][i] = move;
-                gSaveBlock3Ptr->knownSpecies[battlerId] = species;
-                //DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon Type(s): ");
+                for (i = 0; i < MAX_TEAM; i++){ //MAX_TEAM is 6
+                    if (gSaveBlock3Ptr->knownSpecies[battlerId][i] == SPECIES_NONE){
+                        gSaveBlock3Ptr->knownSpecies[battlerId][i] = species;
+                        break;
+                    }
+                }
+                // Storing the typing of the Pokemon
                 for (int j = 0; j < 2; j++) {
                     if (BATTLE_HISTORY->usedMoves[battlerId][j] != TYPE_NONE) {
-                    //    DebugPrintfLevel(MGBA_LOG_WARN, "%S ", gTypesInfo[gBattleMons[battlerId].type1 = gSpeciesInfo[gBattleMons[battlerId].species].types[0]].name);
-                    //    DebugPrintfLevel(MGBA_LOG_WARN, "%S ", gTypesInfo[gBattleMons[battlerId].type1 = gSpeciesInfo[gBattleMons[battlerId].species].types[1]].name);
                        gSaveBlock3Ptr->knownTyping[battlerId] = (gBattleMons[battlerId].type1 = gSpeciesInfo[gBattleMons[battlerId].species].types[0]);
                        gSaveBlock3Ptr->knownTyping2[battlerId] = (gBattleMons[battlerId].type1 = gSpeciesInfo[gBattleMons[battlerId].species].types[1]);
                     }
                 }
-   
-                //DebugPrintfLevel(MGBA_LOG_WARN, "Moved Used: %S", gMovesInfo[BATTLE_HISTORY->usedMoves[battlerId][i]]); //Keep this!!! 
-                // Print the types of the moves used (Mono-only)
-               // DebugPrintfLevel(MGBA_LOG_WARN, "Moves Type: ");
-                for (int j = 0; j < 1; j++) {
-                    if (move != MOVE_NONE) {
-                    u16 moveType = gMovesInfo[move].type;
-                    //DebugPrintfLevel(MGBA_LOG_WARN, "%S ", gTypesInfo[moveType].name);
-                    }
-                }
                 u16 monTyping = gSaveBlock3Ptr->knownTyping[battlerId];
                 u16 monTyping2 = gSaveBlock3Ptr->knownTyping2[battlerId];
-                DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon Stored: %S (%S,%S)", GetSpeciesName(species),gTypesInfo[monTyping].name,gTypesInfo[monTyping2].name);
+                u16 species = gSaveBlock3Ptr->knownSpecies[battlerId][i];
+                DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon Stored: %S(%S,%S)", GetSpeciesName(species), gTypesInfo[monTyping].name, gTypesInfo[monTyping2].name);
                 // DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon Typing stored is: %S", gTypesInfo[monTyping].name);
-                // DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon Typing stored is: %S", gTypesInfo[monTyping2].name);
+                // DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon Typing stored is: %S", gTypesInfo[monTyping2].name);   
                 for (int moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++) {
                     u16 move = gSaveBlock3Ptr->knownMoves[battlerId][moveIndex];
-                    u16 species = gSaveBlock3Ptr->knownSpecies[battlerId];
-                    if (move != MOVE_NONE) {
-                        DebugPrintfLevel(MGBA_LOG_WARN, "- %S", gMovesInfo[move].name);
-                    } else {
-                        // Stop iterating if no more moves are stored
-                     break;
-                    }
+                        if (move != MOVE_NONE) {
+                            DebugPrintfLevel(MGBA_LOG_WARN, "- %S", gMovesInfo[move].name);
+                        } else {
+                            break;
+                        }
                 }
-            break;
-        }
-            DebugPrintfLevel(MGBA_LOG_WARN, "Printing SaveBlock3 information for Battler %d:", battlerId);
-
-    DebugPrintfLevel(MGBA_LOG_WARN, "Moves Stored:");
-    // for (int moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++) {
-    //     u16 move = gSaveBlock3Ptr->knownMoves[battlerId][moveIndex];
-    //     if (move != MOVE_NONE) {
-    //         DebugPrintfLevel(MGBA_LOG_WARN, "- %S", gMovesInfo[move].name);
-    //     } else {
-    //         // Stop iterating if no more moves are stored
-    //         break;
-    //     }
-    // }
-       // afterBattle();
+                break;
+            }
     }
     extern struct SaveBlock3 *gSaveBlock3Ptr;
 }

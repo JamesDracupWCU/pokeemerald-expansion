@@ -5204,9 +5204,7 @@ static s32 AI_CheckViability(u32 battlerAtk, u32 battlerDef, u32 move, s32 score
 // 
 static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score){  
    extern struct SaveBlock3 *gSaveBlock3Ptr;
-
-    // Record the move used by battlerDef
-    RecordKnownMove(battlerAtk, move);
+   RecordKnownMove(battlerDef, move);
 
     DebugPrintfLevel(MGBA_LOG_WARN, "Moves used by Player %d:", battlerDef);
     for (int moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++) {

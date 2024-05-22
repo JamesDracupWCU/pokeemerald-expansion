@@ -171,12 +171,12 @@ struct UCoords32
 };
 
 #define MAX_BATTLERS 2
-#define MAX_MON_MOVES 4
-//#define MAX_MON_PARTY 6
+#define MAX_MOVES 4
+#define MAX_TEAM 6
 struct SaveBlock3
 {
-    u16 knownMoves[MAX_BATTLERS][MAX_MON_MOVES];
-    u16 knownSpecies[MAX_BATTLERS];
+    u16 knownMoves[MAX_BATTLERS][MAX_MOVES];
+    u16 knownSpecies[MAX_BATTLERS][MAX_TEAM];
     u16 knownTyping[MAX_BATTLERS]; //For first type
     u16 knownTyping2[MAX_BATTLERS]; //For second type
 };
