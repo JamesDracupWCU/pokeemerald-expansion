@@ -5204,16 +5204,16 @@ static s32 AI_CheckViability(u32 battlerAtk, u32 battlerDef, u32 move, s32 score
 // 
 static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score){  
    extern struct SaveBlock3 *gSaveBlock3Ptr;
-   RecordKnownMove(battlerDef, move);
+//    RecordKnownMove(battlerDef, move);
 
-    DebugPrintfLevel(MGBA_LOG_WARN, "Moves used by Player %d:", battlerDef);
-    for (int moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++) {
-        u16 moveUsed = gSaveBlock3Ptr->knownMoves[battlerDef][moveIndex];
-        if (moveUsed != MOVE_NONE) {
-            DebugPrintfLevel(MGBA_LOG_WARN, "- %S", gMovesInfo[moveUsed].name);
-        } else {
-            break; // Stop iterating if no more moves are stored
-        }
-    }
+//     DebugPrintfLevel(MGBA_LOG_WARN, "Moves used by Player %d:", battlerDef);
+//     for (int moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++) {
+//         u16 moveUsed = gSaveBlock3Ptr->knownMoves[battlerDef][moveIndex];
+//         if (moveUsed != MOVE_NONE) {
+//             DebugPrintfLevel(MGBA_LOG_WARN, "- %S", gMovesInfo[moveUsed].name);
+//         } else {
+//             break; // Stop iterating if no more moves are stored
+//         }
+//     }
     return 0;
 }
