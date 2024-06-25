@@ -5208,18 +5208,32 @@ static s32 AI_CheckViability(u32 battlerAtk, u32 battlerDef, u32 move, s32 score
 // Store all moves used from both sides during battle.
 // Also store the Damage or effect for each move respectively
 // 
-static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score){  
-   extern struct SaveBlock3 *gSaveBlock3Ptr;
-//    RecordKnownMove(battlerDef, move);
+static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score) {
+    extern struct SaveBlock3 *gSaveBlock3Ptr;
+    
+    for (u32 battlerId = 0; battlerId < MAX_BATTLERS; battlerId++) {
+        for (u32 partyIndex = 0; partyIndex < MAX_TEAM; partyIndex++) {
+            if (gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex] != SPECIES_NONE) {
+                DebugPrintfLevel(MGBA_LOG_WARN, "Known species of battler %d:", battlerId);
+                u16 species = gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex];
 
-//     DebugPrintfLevel(MGBA_LOG_WARN, "Moves used by Player %d:", battlerDef);
-//     for (int moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++) {
-//         u16 moveUsed = gSaveBlock3Ptr->knownMoves[battlerDef][moveIndex];
-//         if (moveUsed != MOVE_NONE) {
-//             DebugPrintfLevel(MGBA_LOG_WARN, "- %S", gMovesInfo[moveUsed].name);
-//         } else {
-//             break; // Stop iterating if no more moves are stored
-//         }
-//     }
+                DebugPrintfLevel(MGBA_LOG_WARN, "- %S Typing: %S %S", GetSpeciesName(species), 
+                                 gTypesInfo[gSaveBlock3Ptr->knownTyping[battlerId][partyIndex]].name, 
+                                 gTypesInfo[gSaveBlock3Ptr->knownTyping2[battlerId][partyIndex]].name);
+
+                DebugPrintfLevel(MGBA_LOG_WARN, "Known moves of %S and typing:", GetSpeciesName(species));
+                for (int moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++) {
+                    u16 moveUsed = gSaveBlock3Ptr->knownMoves[battlerId][partyIndex][moveIndex];
+                    if (moveUsed != MOVE_NONE) {
+                        u16 moveType = gMovesInfo[moveUsed].type;
+                        DebugPrintfLevel(MGBA_LOG_WARN, "- %S %S", gMovesInfo[moveUsed].name, gTypesInfo[moveType].name);
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+    }
     return 0;
 }
+

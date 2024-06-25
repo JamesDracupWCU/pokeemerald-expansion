@@ -1156,7 +1156,7 @@ LittlerootTown_EventScript_RoxanneNoBadge::
 	end
 
 LittlerootTown_EventScript_RoxanneFirstBadge::
-	call_if_set FLAG_DEFEATED_ROXANNE,  LittlerootTown_EventScript_AlreadyFought
+	//call_if_set FLAG_DEFEATED_ROXANNE,  LittlerootTown_EventScript_AlreadyFought
 	//call_if_set FLAG_BADGE02_GET, LittlerootTown_EventScript_RoxanneSecondBadge
 	msgbox LittlerootTown_Text_OneBadge, MSGBOX_DEFAULT
 	trainerbattle_single TRAINER_ROXANNE_2, LittlerootTown_Text_RoxanneIntro, LittlerootTown_Text_RoxanneDefeat, LittlerootTown_EventScript_RoxanneDefeatedSecond, NO_MUSIC

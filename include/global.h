@@ -170,15 +170,17 @@ struct UCoords32
     u32 y;
 };
 
-#define MAX_BATTLERS 2
-#define MAX_MOVES 4
-#define MAX_TEAM 6
-struct SaveBlock3
-{
-    u16 knownMoves[MAX_BATTLERS][MAX_MOVES];
-    u16 knownSpecies[MAX_BATTLERS][MAX_TEAM];
-    u16 knownTyping[MAX_BATTLERS]; //For first type
-    u16 knownTyping2[MAX_BATTLERS]; //For second type
+#define MAX_BATTLERS 2 // Player and NPC
+#define MAX_MON_MOVES 4 // 4 possible moves per Pokémon
+#define MAX_TEAM 6 // 6 Pokémon possible on both sides
+#define MOVE_TYPE 1 // Each Move is a specific type
+
+struct SaveBlock3 {
+    u16 knownMoves[MAX_BATTLERS][MAX_TEAM][MAX_MON_MOVES]; // Record known moves for each Pokémon in the party
+    u16 knownSpecies[MAX_BATTLERS][MAX_TEAM]; // Record known Pokémon in the party
+    u16 knownTyping[MAX_BATTLERS][MAX_TEAM]; // First type of each Pokémon
+    u16 knownTyping2[MAX_BATTLERS][MAX_TEAM]; // Second type of each Pokémon
+    u16 knownMovesType[MAX_BATTLERS][MOVE_TYPE]; // Each Move has one typing
 };
 
 extern struct SaveBlock3 *gSaveBlock3Ptr;

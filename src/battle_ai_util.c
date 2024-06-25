@@ -139,47 +139,47 @@ void RecordLastUsedMoveBy(u32 battlerId, u32 move)
 //     extern struct SaveBlock3 *gSaveBlock3Ptr;
 // }
 void RecordKnownMove(u32 battlerId, u32 move) {
-    s32 i;
-    struct Pokemon *pokemon = &GetBattlerParty(battlerId)[gBattlerPartyIndexes[battlerId]];
+    u32 partyIndex = gBattlerPartyIndexes[battlerId];
+    struct Pokemon *pokemon = &GetBattlerParty(battlerId)[partyIndex];
     u16 species = GetMonData(pokemon, MON_DATA_SPECIES);
-    for (i = 0; i < MAX_MON_MOVES; i++) {
-        if (BATTLE_HISTORY->usedMoves[battlerId][i] == move)
+    
+    // Record the Pokemon if not already recorded
+    for (s32 i = 0; i < MAX_TEAM; i++) {
+        if (gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex] == SPECIES_NONE) {
+            gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex] = species;
+            // Set typing based on species information
+            gSaveBlock3Ptr->knownTyping[battlerId][partyIndex] = gSpeciesInfo[species].types[0];
+            gSaveBlock3Ptr->knownTyping2[battlerId][partyIndex] = gSpeciesInfo[species].types[1];
             break;
-            if (BATTLE_HISTORY->usedMoves[battlerId][i] == MOVE_NONE) {
-                BATTLE_HISTORY->usedMoves[battlerId][i] = move;
-                AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].moves[i] = move;
-                //DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon is: %S", GetSpeciesName(species));
-                gSaveBlock3Ptr->knownMoves[battlerId][i] = move;
-                for (i = 0; i < MAX_TEAM; i++){ //MAX_TEAM is 6
-                    if (gSaveBlock3Ptr->knownSpecies[battlerId][i] == SPECIES_NONE){
-                        gSaveBlock3Ptr->knownSpecies[battlerId][i] = species;
-                        break;
-                    }
-                }
-                // Storing the typing of the Pokemon
-                for (int j = 0; j < 2; j++) {
-                    if (BATTLE_HISTORY->usedMoves[battlerId][j] != TYPE_NONE) {
-                       gSaveBlock3Ptr->knownTyping[battlerId] = (gBattleMons[battlerId].type1 = gSpeciesInfo[gBattleMons[battlerId].species].types[0]);
-                       gSaveBlock3Ptr->knownTyping2[battlerId] = (gBattleMons[battlerId].type1 = gSpeciesInfo[gBattleMons[battlerId].species].types[1]);
-                    }
-                }
-                u16 monTyping = gSaveBlock3Ptr->knownTyping[battlerId];
-                u16 monTyping2 = gSaveBlock3Ptr->knownTyping2[battlerId];
-                u16 species = gSaveBlock3Ptr->knownSpecies[battlerId][i];
-                DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon: %S(%S,%S)", GetSpeciesName(species), gTypesInfo[monTyping].name, gTypesInfo[monTyping2].name);
-                // DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon Typing stored is: %S", gTypesInfo[monTyping].name);
-                // DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon Typing stored is: %S", gTypesInfo[monTyping2].name);   
-                    u16 move = gSaveBlock3Ptr->knownMoves[battlerId][i];
-                        if (move != MOVE_NONE) {
-                            DebugPrintfLevel(MGBA_LOG_WARN, "- %S", gMovesInfo[move].name);
-                        } else {
-                            break;
-                        }
-                break;
-            }
+        } 
+        if (gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex] == species)
+            break;
     }
-    extern struct SaveBlock3 *gSaveBlock3Ptr;
+    
+    // Debug output for recording Pokemon and typings
+    DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon: %S(%S,%S)", GetSpeciesName(species),
+                     gTypesInfo[gSpeciesInfo[species].types[0]].name,
+                     gTypesInfo[gSpeciesInfo[species].types[1]].name);
+
+    // Record the move
+    for (s32 i = 0; i < MAX_MON_MOVES; i++) {
+        if (gSaveBlock3Ptr->knownMoves[battlerId][partyIndex][i] == move) {
+            // Found the move, print debug information
+           // u16 moveStoredType = gMovesInfo[move].type;
+            //DebugPrintfLevel(MGBA_LOG_WARN, "Moves %S Type %S", gMovesInfo[move].name, gTypesInfo[moveStoredType].name);
+            break; // Exit the loop after printing
+        }
+        if (gSaveBlock3Ptr->knownMoves[battlerId][partyIndex][i] == MOVE_NONE) {
+            // Empty slot found, store the move and print debug information
+            gSaveBlock3Ptr->knownMoves[battlerId][partyIndex][i] = move;
+            u16 moveStoredType = gMovesInfo[move].type;
+            DebugPrintfLevel(MGBA_LOG_WARN, "Moves %S Type %S", gMovesInfo[move].name, gTypesInfo[moveStoredType].name);
+            break; // Exit the loop after printing
+        }
+    }
 }
+
+
 
 void RecordAllMoves(u32 battler)
 {
