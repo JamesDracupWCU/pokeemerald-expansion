@@ -3210,74 +3210,88 @@ static const struct TrainerMon sParty_Roxanne1[] = {
     .lvl = 12,
     .species = SPECIES_GOLEM,
     .heldItem = ITEM_NONE,
-    .moves = {MOVE_TACKLE, MOVE_DEFENSE_CURL, MOVE_ROCK_THROW, MOVE_EARTHQUAKE} //removed Rock_TOMB
+    .moves = {MOVE_STEALTH_ROCK, MOVE_ROCK_POLISH, MOVE_ROCK_THROW, MOVE_EARTHQUAKE} //removed Rock_TOMB
     },
     {
     .iv = TRAINER_PARTY_IVS(12, 12, 12, 12, 12, 12),
     .lvl = 12,
     .species = SPECIES_CRADILY,
     .heldItem = ITEM_NONE,
-    .moves = {MOVE_TACKLE, MOVE_DEFENSE_CURL, MOVE_ROCK_THROW}
+    .moves = {MOVE_GIGA_DRAIN, MOVE_TOXIC, MOVE_STEALTH_ROCK, MOVE_ANCIENT_POWER}
     },
     {
     .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
     .lvl = 15,
     .species = SPECIES_LUNATONE,
-    .heldItem = ITEM_ORAN_BERRY,
-    .moves = {MOVE_BLOCK, MOVE_HARDEN, MOVE_TACKLE}
+    .heldItem = ITEM_NONE,
+    .moves = {MOVE_PSYCHIC, MOVE_POWER_GEM, MOVE_EARTH_POWER, MOVE_ROCK_POLISH}
     },
     {
     .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
     .lvl = 15,
     .species = SPECIES_SOLROCK,
-    .heldItem = ITEM_ORAN_BERRY,
-    .moves = {MOVE_BLOCK, MOVE_HARDEN, MOVE_TACKLE}
+    .heldItem = ITEM_NONE,
+    .moves = {MOVE_WILL_O_WISP, MOVE_ANCIENT_POWER, MOVE_FLAMETHROWER, MOVE_SOLAR_BEAM}
     },
     {
     .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
     .lvl = 15,
     .species = SPECIES_AGGRON,
     .heldItem = ITEM_ORAN_BERRY,
-    .moves = {MOVE_BLOCK, MOVE_HARDEN, MOVE_TACKLE}
+    .moves = {MOVE_HEAVY_SLAM, MOVE_EARTHQUAKE, MOVE_FIRE_PUNCH, MOVE_TOXIC}
     },
     {
     .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
     .lvl = 15,
     .species = SPECIES_PROBOPASS,
     .heldItem = ITEM_ORAN_BERRY,
-    .moves = {MOVE_BLOCK, MOVE_HARDEN, MOVE_TACKLE}
+    .moves = {MOVE_SMACK_DOWN, MOVE_EARTH_POWER, MOVE_FLASH_CANNON, MOVE_VOLT_SWITCH}
     }
 };
 
 static const struct TrainerMon sParty_Roxanne2[] = {
     {
-    .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
-    .lvl = 22,
-    .species = SPECIES_GRAVELER,
-    .heldItem = ITEM_FOCUS_SASH,
-    .moves = {MOVE_ROLLOUT, MOVE_SPARK, MOVE_SELF_DESTRUCT, MOVE_ROCK_POLISH}
-    }//,
-    // {
-    // .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
-    // .lvl = 22,
-    // .species = SPECIES_KABUTO,
-    // .heldItem = ITEM_SITRUS_BERRY,
-    // .moves = {MOVE_AQUA_JET, MOVE_MEGA_DRAIN, MOVE_ANCIENT_POWER, MOVE_ROCK_SLIDE}
-    // },
-    // {
-    // .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
-    // .lvl = 23,
-    // .species = SPECIES_GRAVELER,
-    // .heldItem = ITEM_NONE,
-    // .moves = {MOVE_ROCK_THROW, MOVE_STONE_EDGE, MOVE_EARTHQUAKE, MOVE_STEALTH_ROCK}
-    // },
-    // {
-    // .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
-    // .lvl = 25,
-    // .species = SPECIES_NOSEPASS,
-    // .heldItem = ITEM_SITRUS_BERRY,
-    // .moves = {MOVE_BLOCK, MOVE_HARDEN, MOVE_TACKLE, MOVE_ROCK_TOMB}
-    // }
+    .iv = TRAINER_PARTY_IVS(12, 12, 12, 12, 12, 12),
+    .lvl = 12,
+    .species = SPECIES_GOLEM,
+    .heldItem = ITEM_NONE,
+    .moves = {MOVE_STEALTH_ROCK, MOVE_ROCK_POLISH, MOVE_ROCK_THROW, MOVE_EARTHQUAKE} //removed Rock_TOMB
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(12, 12, 12, 12, 12, 12),
+    .lvl = 12,
+    .species = SPECIES_CRADILY,
+    .heldItem = ITEM_NONE,
+    .moves = {MOVE_GIGA_DRAIN, MOVE_TOXIC, MOVE_STEALTH_ROCK, MOVE_ANCIENT_POWER}
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
+    .lvl = 15,
+    .species = SPECIES_LUNATONE,
+    .heldItem = ITEM_NONE,
+    .moves = {MOVE_PSYCHIC, MOVE_POWER_GEM, MOVE_EARTH_POWER, MOVE_ROCK_POLISH}
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
+    .lvl = 15,
+    .species = SPECIES_SOLROCK,
+    .heldItem = ITEM_NONE,
+    .moves = {MOVE_WILL_O_WISP, MOVE_ANCIENT_POWER, MOVE_FLAMETHROWER, MOVE_SOLAR_BEAM}
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
+    .lvl = 15,
+    .species = SPECIES_AGGRON,
+    .heldItem = ITEM_ORAN_BERRY,
+    .moves = {MOVE_HEAVY_SLAM, MOVE_EARTHQUAKE, MOVE_FIRE_PUNCH, MOVE_TOXIC}
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
+    .lvl = 15,
+    .species = SPECIES_PROBOPASS,
+    .heldItem = ITEM_ORAN_BERRY,
+    .moves = {MOVE_SMACK_DOWN, MOVE_EARTH_POWER, MOVE_FLASH_CANNON, MOVE_VOLT_SWITCH}
+    }
 };
 
 static const struct TrainerMon sParty_Roxanne3[] = {

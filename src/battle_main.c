@@ -1133,7 +1133,6 @@ static void CB2_HandleStartBattle(void)
     RunTasks();
     AnimateSprites();
     BuildOamBuffer();
-
     playerMultiplayerId = GetMultiplayerId();
     gBattleScripting.multiplayerId = playerMultiplayerId;
     enemyMultiplayerId = playerMultiplayerId ^ BIT_SIDE;
@@ -1312,6 +1311,7 @@ static void CB2_HandleStartBattle(void)
         {
             gPreBattleCallback1 = gMain.callback1;
             gMain.callback1 = BattleMainCB1;
+            DebugPrintfLevel(MGBA_LOG_WARN, "Start of Battle!");
             SetMainCallback2(BattleMainCB2);
             if (gBattleTypeFlags & BATTLE_TYPE_LINK)
                 gBattleTypeFlags |= BATTLE_TYPE_LINK_IN_BATTLE;
@@ -4448,7 +4448,7 @@ static void HandleTurnActionSelectionState(void)
         case STATE_TURN_START_RECORD: // Recorded battle related action on start of every turn.
             RecordedBattle_CopyBattlerMoves(battler);
             gBattleCommunication[battler] = STATE_BEFORE_ACTION_CHOSEN;
-
+            
             // Do AI score computations here so we can use them in AI_TrySwitchOrUseItem
             if ((gBattleTypeFlags & BATTLE_TYPE_HAS_AI || IsWildMonSmart())
                     && (BattlerHasAi(battler) && !(gBattleTypeFlags & BATTLE_TYPE_PALACE)))
@@ -5748,7 +5748,7 @@ static void HandleEndTurn_MonFled(void)
 static void HandleEndTurn_FinishBattle(void)
 {
     u32 i, battler;
-
+    
     if (gCurrentActionFuncId == B_ACTION_TRY_FINISH || gCurrentActionFuncId == B_ACTION_FINISHED)
     {
         if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK
@@ -5834,6 +5834,7 @@ static void HandleEndTurn_FinishBattle(void)
         }
         gBattleMainFunc = FreeResetData_ReturnToOvOrDoEvolutions;
         gCB2_AfterEvolution = BattleMainCB2;
+        DebugPrintfLevel(MGBA_LOG_WARN, "Battle ended."); // Here we can do the Revising part of Case based reasoning
     }
     else
     {

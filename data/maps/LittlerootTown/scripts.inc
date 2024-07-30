@@ -1127,20 +1127,6 @@ LittlerootTown_EventScript_PostBadgeBattles::
 	case 6 LittlerootTown_EventScript_TateAndLizaPostBadgeBattles
 	case 7 LittlerootTown_EventScript_JuanPostBadgeBattles
 	end
-// LittlerootTown_EventScript_RoxanneBadgeCheck::
-// 	lock
-// 	faceplayer
-// 	switch VAR_0x8004
-// 	case 0 LittlerootTown_EventScript_RoxanneNoBadge
-// 	case 1 LittlerootTown_EventScript_RoxanneFirstBadge
-// 	case 2 LittlerootTown_EventScript_RoxanneSecondBadge
-// 	case 3 LittlerootTown_EventScript_RoxanneThirdBadge
-// 	case 4 LittlerootTown_EventScript_RoxanneFourthBadge
-// 	case 5 LittlerootTown_EventScript_RoxanneFifthBadge
-// 	case 6 LittlerootTown_EventScript_RoxanneSixthBadge
-// 	case 7 LittlerootTown_EventScript_RoxanneSeventhBadge
-// 	case 8 LittlerootTown_EventScript_PostBadgeBattles
-//     end
 
 LittlerootTown_EventScript_RoxanneNoBadge::
 	lock
@@ -1148,12 +1134,37 @@ LittlerootTown_EventScript_RoxanneNoBadge::
 	call_if_set FLAG_DEFEATED_ROXANNE, LittlerootTown_EventScript_AlreadyFought
 	//call_if_set FLAG_BADGE01_GET, LittlerootTown_EventScript_RoxanneFirstBadge
 	trainerbattle_single TRAINER_ROXANNE_1, LittlerootTown_Text_RoxanneIntro, LittlerootTown_Text_RoxanneDefeat, LittlerootTown_EventScript_RoxanneDefeatedFirst, NO_MUSIC
+	// specialvar VAR_RESULT, ShouldTryRematchBattle
+	// goto_if_eq VAR_RESULT, TRUE, LitterootTown_EventScript_RoxanneRematch
 	// setvar VAR_0x8005, 1
 	// setvar VAR_0x800A, 1
 	goto_if_unset FLAG_RECEIVED_TM_ROCK_TOMB, LittlerootTown_EventScript_GiveRockTomb
 	msgbox LittlerootTown_Text_RoxannePostBattle, MSGBOX_DEFAULT
 	release
 	end
+
+LitterootTown_EventScript_RoxanneRematch::
+	trainerbattle_single TRAINER_ROXANNE_1, LittlerootTown_Text_RoxannePreRematch, LittlerootTown_Text_RoxanneRematchDefeat
+	msgbox LittlerootTown_Text_RoxannePostRematch, MSGBOX_AUTOCLOSE
+	end
+
+LittlerootTown_Text_RoxannePreRematch:
+	.string "ROXANNE: I'm so glad to see you again.\n"
+	.string "I'm ROXANNE, the GYM LEADER here.\p"
+	.string "I'm sure we've both experienced many\n"
+	.string "battles since we last met.\p"
+	.string "I would like to see how much better\n"
+	.string "we've become. Let us battle!$"
+
+LittlerootTown_Text_RoxanneRematchDefeat:
+	.string "Grr…\n"
+	.string "Again, I have lost…$"
+
+LittlerootTown_Text_RoxannePostRematch:
+	.string "ROXANNE: I still have much to learn\n"
+	.string "when it comes to battling POKéMON.\p"
+	.string "That awareness makes me love battling\n"
+	.string "all that much more!$"
 
 LittlerootTown_EventScript_RoxanneFirstBadge::
 	//call_if_set FLAG_DEFEATED_ROXANNE,  LittlerootTown_EventScript_AlreadyFought
@@ -3271,17 +3282,6 @@ LittlerootTown_Text_ExplainRockTomb:
 	.string "Remember, a TM can be used only once,\n"
 	.string "so think before you use it.$"
 
-LittlerootTown_Text_RoxannePreRematch:
-	.string "ROXANNE: I'm so glad to see you again.\n"
-	.string "I'm ROXANNE, the GYM LEADER here.\p"
-	.string "I'm sure we've both experienced many\n"
-	.string "battles since we last met.\p"
-	.string "I would like to see how much better\n"
-	.string "we've become. Let us battle!$"
-
-LittlerootTown_Text_RoxanneRematchDefeat:
-	.string "Grr…\n"
-	.string "Again, I have lost…$"
 
 LittlerootTown_Text_RoxanneRematchNeedTwoMons:
 	.string "ROXANNE: I'm so glad to see you again.\n"
@@ -3294,12 +3294,6 @@ LittlerootTown_Text_RoxanneRematchNeedTwoMons:
 	.string "You only have one POKéMON with you?\p"
 	.string "Please return with at least one more\n"
 	.string "POKéMON.$"
-
-LittlerootTown_Text_RoxannePostRematch:
-	.string "ROXANNE: I still have much to learn\n"
-	.string "when it comes to battling POKéMON.\p"
-	.string "That awareness makes me love battling\n"
-	.string "all that much more!$"
 
 LittlerootTown_Text_BrawlyIntro:
 	.string "I'm BRAWLY!\n"

@@ -2931,12 +2931,11 @@ static void Task_StartSendOutAnim(u8 taskId)
     {
         u32 battlerPartner;
         u32 battler = gTasks[taskId].tBattlerId;
-
+        //DebugPrintfLevel(MGBA_LOG_WARN, "Battler %S", GetSpeciesName(gTasks[taskId].tBattlerId));
         if (TwoMonsAtSendOut(battler))
         {
             gBattleResources->bufferA[battler][1] = gBattlerPartyIndexes[battler];
             StartSendOutAnim(battler, FALSE);
-
             battlerPartner = battler ^ BIT_FLANK;
             gBattleResources->bufferA[battlerPartner][1] = gBattlerPartyIndexes[battlerPartner];
             BattleLoadMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[battlerPartner]], battlerPartner);

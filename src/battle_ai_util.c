@@ -157,9 +157,9 @@ void RecordKnownMove(u32 battlerId, u32 move) {
     }
     
     // Debug output for recording Pokemon and typings
-    DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon: %S(%S,%S)", GetSpeciesName(species),
-                     gTypesInfo[gSpeciesInfo[species].types[0]].name,
-                     gTypesInfo[gSpeciesInfo[species].types[1]].name);
+    // DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon: %S(%S,%S)", GetSpeciesName(species),
+    //                  gTypesInfo[gSpeciesInfo[species].types[0]].name,
+    //                  gTypesInfo[gSpeciesInfo[species].types[1]].name);
 
     // Record the move
     for (s32 i = 0; i < MAX_MON_MOVES; i++) {
@@ -173,7 +173,10 @@ void RecordKnownMove(u32 battlerId, u32 move) {
             // Empty slot found, store the move and print debug information
             gSaveBlock3Ptr->knownMoves[battlerId][partyIndex][i] = move;
             u16 moveStoredType = gMovesInfo[move].type;
-            DebugPrintfLevel(MGBA_LOG_WARN, "Moves %S Type %S", gMovesInfo[move].name, gTypesInfo[moveStoredType].name);
+            DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon: %S(%S,%S)", GetSpeciesName(species),
+                     gTypesInfo[gSpeciesInfo[species].types[0]].name,
+                     gTypesInfo[gSpeciesInfo[species].types[1]].name);
+            DebugPrintfLevel(MGBA_LOG_WARN, "Moves %S Type %S \n", gMovesInfo[move].name, gTypesInfo[moveStoredType].name);
             break; // Exit the loop after printing
         }
     }
@@ -2190,11 +2193,11 @@ bool32 IsTwoTurnNotSemiInvulnerableMove(u32 battlerAtk, u32 move)
     switch (gMovesInfo[move].effect)
     {
     case EFFECT_SOLAR_BEAM:
-    case EFFECT_TWO_TURNS_ATTACK:
-        return !(AI_DATA->holdEffects[battlerAtk] == HOLD_EFFECT_POWER_HERB
-          || (AI_GetWeather(AI_DATA) & gMovesInfo[move].argument));
+    case EFFECT_TWO_TURNS_ATTACK:       // & is bitwise AND comparison
+        return !(AI_DATA->holdEffects[battlerAtk] == HOLD_EFFECT_POWER_HERB 
+          || (AI_GetWeather(AI_DATA) & gMovesInfo[move].argument)); // return T/F if attacker has a holdeffect that equals Power Herb or Weather & argument 
     default:
-        return FALSE;
+        return FALSE; // Else False
     }
 }
 
@@ -3791,3 +3794,4 @@ void IncreaseTidyUpScore(u32 battlerAtk, u32 battlerDef, u32 move, s32 *score)
     if (gStatuses3[battlerDef] & STATUS3_LEECHSEED)
         ADJUST_SCORE_PTR(-2);
 }
+

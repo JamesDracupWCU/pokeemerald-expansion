@@ -4605,7 +4605,7 @@ bool32 NoAliveMonsForPlayer(void)
             HP_count += GetMonData(&gPlayerParty[i], MON_DATA_HP);
         }
     }
-
+    
     return (HP_count == 0);
 }
 
@@ -4642,12 +4642,19 @@ static void Cmd_checkteamslost(void)
     if (gBattleControllerExecFlags)
         return;
 
-    if (NoAliveMonsForPlayer())
+    if (NoAliveMonsForPlayer()) {
         gBattleOutcome |= B_OUTCOME_LOST;
+        DebugPrintfLevel(MGBA_LOG_WARN, "AI WON"); // Call a function in here for Revising?
+        strcpy(gSaveBlock3Ptr->battleOutcome, "Won"); // for Revising Part of Case-based reasoning
+        DebugPrintfLevel(MGBA_LOG_WARN, "Stored battleOutcome: %s", gSaveBlock3Ptr->battleOutcome);
+    }
 
-    if (NoAliveMonsForOpponent())
+    if (NoAliveMonsForOpponent()) {
         gBattleOutcome |= B_OUTCOME_WON;
-
+        DebugPrintfLevel(MGBA_LOG_WARN, "AI Lost");
+        strcpy(gSaveBlock3Ptr->battleOutcome, "Lost");
+        DebugPrintfLevel(MGBA_LOG_WARN, "Stored battleOutcome: %s", gSaveBlock3Ptr->battleOutcome);
+    }
     // For link battles that haven't ended, count number of empty battler spots
     // In link multi battles, jump to pointer if more than 1 spot empty
     // In non-multi battles, jump to pointer if 1 spot is missing on both sides
@@ -5859,7 +5866,9 @@ static void Cmd_moveend(void)
                     if (!gSpecialStatuses[gBattlerAttacker].dancerUsedMove)
                     {
                         gLastMoves[gBattlerAttacker] = gChosenMove;
-                        RecordKnownMove(gBattlerAttacker, gChosenMove);
+                        //DebugPrintfLevel(MGBA_LOG_WARN, "Hello");
+                        RecordKnownMove(gBattlerAttacker, gChosenMove); // Look at here
+                        //DebugPrintfLevel(MGBA_LOG_WARN, "Hello");
                         gLastResultingMoves[gBattlerAttacker] = gCurrentMove;
                     }
                 }

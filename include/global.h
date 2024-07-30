@@ -174,6 +174,7 @@ struct UCoords32
 #define MAX_MON_MOVES 4 // 4 possible moves per Pokémon
 #define MAX_TEAM 6 // 6 Pokémon possible on both sides
 #define MOVE_TYPE 1 // Each Move is a specific type
+#define MAX_BATTLE_OUTCOME_LEN 4
 
 struct SaveBlock3 {
     u16 knownMoves[MAX_BATTLERS][MAX_TEAM][MAX_MON_MOVES]; // Record known moves for each Pokémon in the party
@@ -181,6 +182,7 @@ struct SaveBlock3 {
     u16 knownTyping[MAX_BATTLERS][MAX_TEAM]; // First type of each Pokémon
     u16 knownTyping2[MAX_BATTLERS][MAX_TEAM]; // Second type of each Pokémon
     u16 knownMovesType[MAX_BATTLERS][MOVE_TYPE]; // Each Move has one typing
+    char battleOutcome[MAX_BATTLE_OUTCOME_LEN]; // Store "Won" or "Lost"
 };
 
 extern struct SaveBlock3 *gSaveBlock3Ptr;

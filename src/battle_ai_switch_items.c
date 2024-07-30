@@ -33,6 +33,7 @@ static u32 GetSwitchinHazardsDamage(u32 battler, struct BattlePokemon *battleMon
 static void InitializeSwitchinCandidate(struct Pokemon *mon)
 {
     PokemonToBattleMon(mon, &AI_DATA->switchinCandidate.battleMon);
+    //DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon Sent in %S", GetSpeciesName(GetMonData(mon, MON_DATA_SPECIES)));
     AI_DATA->switchinCandidate.hypotheticalStatus = FALSE;
 }
 
@@ -74,10 +75,18 @@ static bool32 HasBadOdds(u32 battler, bool32 emitResult)
     s32 i, damageDealt = 0, maxDamageDealt = 0, damageTaken = 0, maxDamageTaken = 0;
     u32 aiMove, playerMove, aiBestMove = MOVE_NONE, aiAbility = GetBattlerAbility(battler), opposingBattler, weather = AI_GetWeather(AI_DATA);
     bool32 getsOneShot = FALSE, hasStatusMove = FALSE, hasSuperEffectiveMove = FALSE;
+    u16 value;
 	u16 typeEffectiveness = UQ_4_12(1.0), aiMoveEffect; //baseline typing damage
-
+    char outcome[4];
+    u32 partyIndexAI = gBattlerPartyIndexes[battler]; // Retrieves the current AI pokemon out on field
+    u32 partyIndexUser = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)]; // Retrieves the current User pokemon out on field
+    struct Pokemon *pokemonAI = &GetBattlerParty(battler)[partyIndexAI]; // Updates each turn current pokemon out in case of switches
+    struct Pokemon *pokemonUser = &GetBattlerParty(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT))[partyIndexUser];
+    u16 speciesAI = GetMonData(pokemonAI, MON_DATA_SPECIES); // Current pokemon AI out on field
+    u16 speciesUser = GetMonData(pokemonUser, MON_DATA_SPECIES); 
+    extern struct SaveBlock3 *gSaveBlock3Ptr;
     // Only use this if AI_FLAG_SMART_SWITCHING is set for the trainer
-    if (!(AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_SMART_SWITCHING))
+    if (!(AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_ADAPTIVE_AI))
         return FALSE;
 
     // Double Battles aren't included in AI_FLAG_SMART_MON_CHOICE. Defaults to regular switch in logic
@@ -92,7 +101,6 @@ static bool32 HasBadOdds(u32 battler, bool32 emitResult)
 	atkType2 = gBattleMons[opposingBattler].type2;
 	defType1 = gBattleMons[battler].type1;
 	defType2 = gBattleMons[battler].type2;
-
     // Check AI moves for damage dealt
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
@@ -116,10 +124,12 @@ static bool32 HasBadOdds(u32 battler, bool32 emitResult)
             {
                 // Check if mon has a super effective move
                 if (AI_GetTypeEffectiveness(aiMove, battler, opposingBattler) >= UQ_4_12(2.0))
+                    //DebugPrintfLevel(MGBA_LOG_WARN, "AI has super effective Move %S", gMovesInfo[aiMove].name);
                     hasSuperEffectiveMove = TRUE;
 
                 // Get maximum damage mon can deal
                 damageDealt = AI_DATA->simulatedDmg[battler][opposingBattler][i];
+                //DebugPrintfLevel(MGBA_LOG_WARN, "MAx Damage AI mon can deal %d", damageDealt);
                 if(damageDealt > maxDamageDealt)
                 {
                     maxDamageDealt = damageDealt;
@@ -140,23 +150,58 @@ static bool32 HasBadOdds(u32 battler, bool32 emitResult)
         if (atkType2 != atkType1)
             typeEffectiveness = uq4_12_multiply(typeEffectiveness, (GetTypeModifier(atkType2, defType2)));
     }
+    //DebugPrintfLevel(MGBA_LOG_WARN, "Type Effectiveness against Opponent %S %d", GetSpeciesName(speciesUser), typeEffectiveness);
 
-    // Get max damage mon could take
-    for (i = 0; i < MAX_MON_MOVES; i++)
-    {
-        playerMove = gBattleMons[opposingBattler].moves[i];
-        if (playerMove != MOVE_NONE && gMovesInfo[playerMove].power != 0)
-        {
-            damageTaken = AI_CalcDamage(playerMove, opposingBattler, battler, &effectiveness, FALSE, weather);
-            if (damageTaken > maxDamageTaken)
-                maxDamageTaken = damageTaken;
+    //Get max damage mon could take
+    // for (i = 0; i < MAX_MON_MOVES; i++)
+    // {
+    //     playerMove = gBattleMons[opposingBattler].moves[i];
+    //     if (playerMove != MOVE_NONE && gMovesInfo[playerMove].power != 0)
+    //     {
+    //         damageTaken = AI_CalcDamage(playerMove, opposingBattler, battler, &effectiveness, FALSE, weather);
+    //         DebugPrintfLevel(MGBA_LOG_WARN, "Player Move %S and Damage it deals %d", gMovesInfo[playerMove].name, damageTaken);
+    //         DebugPrintfLevel(MGBA_LOG_WARN, "Max Damage %d", maxDamageTaken);
+    //         if (damageTaken > maxDamageTaken)
+    //             maxDamageTaken = damageTaken;
+    //     }
+    // }
+    // // Get max damage mon could take
+    //for (i = 0; i < MAX_MON_MOVES; i++)
+    //{
+    DebugPrintfLevel(MGBA_LOG_WARN, "Current Pokemon of AI %S", GetSpeciesName(speciesAI));
+    DebugPrintfLevel(MGBA_LOG_WARN, "Current Pokemon of User %S", GetSpeciesName(speciesUser));
+    DebugPrintfLevel(MGBA_LOG_WARN, "User's Typing %S, %S versus AI's Typing %S, %S \n", gTypesInfo[atkType1].name, gTypesInfo[atkType2].name,
+    gTypesInfo[defType1].name, gTypesInfo[defType2].name);
+        for (u32 battlerId = 0; battlerId < MAX_BATTLERS; battlerId++){
+            for (u32 partyIndex = 0; partyIndex < MAX_TEAM; partyIndex++) {
+                if (gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex] != SPECIES_NONE) {
+                //DebugPrintfLevel(MGBA_LOG_WARN, "Known species of battler %d:", battlerId);
+                u16 species = gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex];
+                    if (speciesUser == species){
+                        for (int moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++){
+                        u16 moveUsed = gSaveBlock3Ptr->knownMoves[battlerId][partyIndex][moveIndex];
+                            //playerMove = gBattleMons[opposingBattler].moves[i];
+                            if (moveUsed != MOVE_NONE && (gMovesInfo[moveUsed].power == 0 || gMovesInfo[moveUsed].power != 0))
+                            {
+                                damageTaken = AI_CalcDamage(moveUsed, opposingBattler, battler, &effectiveness, FALSE, weather);
+                                if (damageTaken > maxDamageTaken)
+                                    maxDamageTaken = damageTaken;
+                                    DebugPrintfLevel(MGBA_LOG_WARN, "Player Move %S and Damage it deals %d", gMovesInfo[moveUsed].name, damageTaken);
+                            }
+                        }
+                        DebugPrintfLevel(MGBA_LOG_WARN, "Max Damage %d \n", maxDamageTaken);
+                    }
+                }
+            }
         }
-    }
+    //}
 
     // Check if mon gets one shot
     if(maxDamageTaken > gBattleMons[battler].hp)
     {
+        DebugPrintfLevel(MGBA_LOG_WARN, "AI can get One-shot");
         getsOneShot = TRUE;
+        
     }
 
     // Check if current mon can outspeed and KO in spite of bad matchup, and don't switch out if it can
@@ -178,14 +223,47 @@ static bool32 HasBadOdds(u32 battler, bool32 emitResult)
             || (aiAbility == ABILITY_REGENERATOR
             && gBattleMons[battler].hp >= gBattleMons[battler].maxHP / 4)))
     {
+        // strcpy(outCome, gSaveBlock3Ptr->battleOutcome);
+        // DebugPrintfLevel(MGBA_LOG_WARN, "Outcome was %s", outCome);
+        // Below happens each turn
         // 50% chance to stay in regardless
-        if (Random() % 2 == 0)
-            return FALSE;
-
+        // if (Random() % 2 == 0)
+        //     return FALSE;
+        strcpy(outcome, gSaveBlock3Ptr->battleOutcome); // if AI lost chances of staying in should be low but not always switching
+        //DebugPrintfLevel(MGBA_LOG_WARN, "Outcome %s", outcome);
+        if (strcmp(outcome, "Lost") < 1){ // User Won so Ai lost
+            DebugPrintfLevel(MGBA_LOG_WARN, "AI Lost last time");
+            if (getsOneShot) {
+                gBattleStruct->AI_monToSwitchIntoId[battler] = PARTY_SIZE;
+                BtlController_EmitTwoReturnValues(battler, 1, B_ACTION_SWITCH, 0);
+                DebugPrintfLevel(MGBA_LOG_WARN, "Switching out!");
+                return TRUE;
+            }
+            if ((Random()) % 5 == 0){ 
+                //DebugPrintfLevel(MGBA_LOG_WARN, "Random Value %d", (Random()));
+                return FALSE;
+            }  
+        } 
+        if (strcmp("Won",outcome) == 0) { // User Lost
+            DebugPrintfLevel(MGBA_LOG_WARN, "Ai Won last time");
+            if ((Random() % 100) > 50){ // so 3/4ths of the time it should stay in if it won prior.
+                //DebugPrintfLevel(MGBA_LOG_WARN, "Random Value %d", (Random()));
+                return FALSE;
+            }
+        }
+        else {
+            if ((Random()) % 2 == 0){ // Inital match its a 50/50 since doesn't know opponents team
+                DebugPrintfLevel(MGBA_LOG_WARN, "Random Value %d", (Random()));
+                //DebugPrintfLevel(MGBA_LOG_WARN, "Default Non-Switch");
+                return FALSE;
+            }
+        }
+        
         // Switch mon out
         gBattleStruct->AI_monToSwitchIntoId[battler] = PARTY_SIZE;
         if (emitResult)
             BtlController_EmitTwoReturnValues(battler, 1, B_ACTION_SWITCH, 0);
+            DebugPrintfLevel(MGBA_LOG_WARN, "HasBadOdds 1st Check Switching out!");
         return TRUE;
     }
 
@@ -202,13 +280,41 @@ static bool32 HasBadOdds(u32 battler, bool32 emitResult)
                 return FALSE;
 
             // 50% chance to stay in regardless
-            if (Random() % 2 == 0)
+            // if (Random() % 2 == 0)
+            //     return FALSE;
+            strcpy(outcome, gSaveBlock3Ptr->battleOutcome);
+            if (strcmp(outcome, "Lost") < 1){ // User Won so Ai lost
+            DebugPrintfLevel(MGBA_LOG_WARN, "AI Lost last time");
+            if (getsOneShot) {
+                gBattleStruct->AI_monToSwitchIntoId[battler] = PARTY_SIZE;
+                BtlController_EmitTwoReturnValues(battler, 1, B_ACTION_SWITCH, 0);
+                DebugPrintfLevel(MGBA_LOG_WARN, "Switching out!");
+                return TRUE;
+            }
+            if ((Random()) % 5 == 0){ 
+                //DebugPrintfLevel(MGBA_LOG_WARN, "Random Value %d", (Random()));
                 return FALSE;
-
+            }  
+        } 
+        if (strcmp("Won",outcome) == 0) { // User Lost
+            DebugPrintfLevel(MGBA_LOG_WARN, "Ai Won last time");
+            if ((Random() % 100) > 50){ // so 3/4ths of the time it should stay in if it won prior.
+                //DebugPrintfLevel(MGBA_LOG_WARN, "Random Value %d", (Random()));
+                return FALSE;
+            }
+        }
+        else {
+            if ((Random()) % 2 == 0){ // Inital match its a 50/50 since doesn't know opponents team
+                DebugPrintfLevel(MGBA_LOG_WARN, "Random Value %d", (Random()));
+                //DebugPrintfLevel(MGBA_LOG_WARN, "Default Non-Switch");
+                return FALSE;
+            }
+        }
             // Switch mon out
 			gBattleStruct->AI_monToSwitchIntoId[battler] = PARTY_SIZE;
 			if (emitResult)
                 BtlController_EmitTwoReturnValues(battler, 1, B_ACTION_SWITCH, 0);
+                DebugPrintfLevel(MGBA_LOG_WARN, "HasBadOdds 2nd Check Switching out!");
 			return TRUE;
 		}
 	}
@@ -223,6 +329,7 @@ static bool32 ShouldSwitchIfAllBadMoves(u32 battler, bool32 emitResult)
         gBattleStruct->AI_monToSwitchIntoId[battler] = AI_DATA->monToSwitchId[battler];
         if (emitResult)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, B_ACTION_SWITCH, 0);
+            DebugPrintfLevel(MGBA_LOG_WARN, "Should Switch if Bad Moves Check");
         return TRUE;
     }
     else
@@ -407,6 +514,7 @@ static bool32 FindMonThatAbsorbsOpponentsMove(u32 battler, bool32 emitResult)
                 gBattleStruct->AI_monToSwitchIntoId[battler] = i;
                 if (emitResult)
                     BtlController_EmitTwoReturnValues(battler, 1, B_ACTION_SWITCH, 0);
+                    DebugPrintfLevel(MGBA_LOG_WARN, "FindMon that Absorbs Move Check");
                 return TRUE;
             }
         }
@@ -438,7 +546,7 @@ static bool32 ShouldSwitchIfGameStatePrompt(u32 battler, bool32 emitResult)
         && monAbility != ABILITY_SOUNDPROOF)
         switchMon = TRUE;
 
-    if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_SMART_SWITCHING)
+    if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_ADAPTIVE_AI)
     {
         //Yawn
         if (gStatuses3[battler] & STATUS3_YAWN
@@ -581,6 +689,7 @@ static bool32 ShouldSwitchIfGameStatePrompt(u32 battler, bool32 emitResult)
             gBattleStruct->AI_monToSwitchIntoId[battler] = PARTY_SIZE;
         if (emitResult)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, B_ACTION_SWITCH, 0);
+            DebugPrintfLevel(MGBA_LOG_WARN, "Should Switch Game STate Check");
         return TRUE;
     }
     else
@@ -660,6 +769,7 @@ static bool32 HasSuperEffectiveMoveAgainstOpponents(u32 battler, bool32 noRng)
 
             if (AI_GetTypeEffectiveness(move, battler, opposingBattler) >= UQ_4_12(2.0))
             {
+                //DebugPrintfLevel(MGBA_LOG_WARN, "HasSuperEffectiveMoveAgainstOpponents Check. Move %S", gMovesInfo[move].name);
                 if (noRng)
                     return TRUE;
                 if (Random() % 10 != 0)
@@ -682,6 +792,7 @@ static bool32 HasSuperEffectiveMoveAgainstOpponents(u32 battler, bool32 noRng)
 
             if (AI_GetTypeEffectiveness(move, battler, opposingBattler) >= UQ_4_12(2.0))
             {
+                //DebugPrintfLevel(MGBA_LOG_WARN, "HasSuperEffectiveMoveAgainstOpponents Check. Move %S", gMovesInfo[move].name);
                 if (noRng)
                     return TRUE;
                 if (Random() % 10 != 0)
@@ -857,7 +968,7 @@ static bool32 CanMonSurviveHazardSwitchin(u32 battler)
 static bool32 ShouldSwitchIfEncored(u32 battler, bool32 emitResult)
 {
     // Only use this if AI_FLAG_SMART_SWITCHING is set for the trainer
-    if (!(AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_SMART_SWITCHING))
+    if (!(AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_ADAPTIVE_AI))
         return FALSE;
 
     // If not Encored or if no good switchin, don't switch
@@ -883,7 +994,7 @@ static bool32 AreAttackingStatsLowered(u32 battler, bool32 emitResult)
     s8 spAttackingStage = gBattleMons[battler].statStages[STAT_SPATK];
 
     // Only use this if AI_FLAG_SMART_SWITCHING is set for the trainer
-    if (!(AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_SMART_SWITCHING))
+    if (!(AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_ADAPTIVE_AI))
         return FALSE;
 
     // Physical attacker
@@ -1021,7 +1132,7 @@ bool32 ShouldSwitch(u32 battler, bool32 emitResult)
         return TRUE;
 
     //These Functions can prompt switch to generic pary members
-    if ((AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_SMART_SWITCHING) && (CanMonSurviveHazardSwitchin(battler) == FALSE))
+    if ((AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_ADAPTIVE_AI) && (CanMonSurviveHazardSwitchin(battler) == FALSE))
         return FALSE;
     if (ShouldSwitchIfAllBadMoves(battler, emitResult))
         return TRUE;
@@ -1722,7 +1833,6 @@ static u32 GetBestMonIntegrated(struct Pokemon *party, int firstId, int lastId, 
         }
         else
             aliveCount++;
-
         InitializeSwitchinCandidate(&party[i]);
 
         // While not really invalid per say, not really wise to switch into this mon
@@ -1909,7 +2019,11 @@ u8 GetMostSuitableMonToSwitchInto(u32 battler, bool32 switchAfterMonKOd)
     s32 firstId = 0;
     s32 lastId = 0; // + 1
     struct Pokemon *party;
-
+    // u32 battlerAI = battler;
+    // u32 partyIndexAI = gBattlerPartyIndexes[battlerAI];
+    // struct Pokemon *pokemonAI = &GetBattlerParty(battlerAI)[partyIndexAI];
+    // u16 speciesName = GetMonData(pokemonAI, MON_DATA_SPECIES);
+    // //DebugPrintfLevel(MGBA_LOG_WARN, "AI Pokemon %S", GetSpeciesName(speciesName));
     if (*(gBattleStruct->monToSwitchIntoId + battler) != PARTY_SIZE)
         return *(gBattleStruct->monToSwitchIntoId + battler);
     if (gBattleTypeFlags & BATTLE_TYPE_ARENA)
@@ -1943,11 +2057,68 @@ u8 GetMostSuitableMonToSwitchInto(u32 battler, bool32 switchAfterMonKOd)
 
     // Split ideal mon decision between after previous mon KO'd (prioritize offensive options) and after switching active mon out (prioritize defensive options), and expand the scope of both.
     // Only use better mon selection if AI_FLAG_SMART_MON_CHOICES is set for the trainer.
-    if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_SMART_MON_CHOICES && !(gBattleTypeFlags & BATTLE_TYPE_DOUBLE)) // Double Battles aren't included in AI_FLAG_SMART_MON_CHOICE. Defaults to regular switch in logic
+    if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_ADAPTIVE_AI && !(gBattleTypeFlags & BATTLE_TYPE_DOUBLE)) // Double Battles aren't included in AI_FLAG_SMART_MON_CHOICE. Defaults to regular switch in logic
     {
-        bestMonId = GetBestMonIntegrated(party, firstId, lastId, battler, opposingBattler, battlerIn1, battlerIn2, switchAfterMonKOd);
+    // u32 partyIndexAI = gBattlerPartyIndexes[battler]; // Retrieves the current AI pokemon out on field
+    // u32 partyIndexUser = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)]; // Retrieves the current User pokemon out on field
+    // struct Pokemon *pokemonAI = &GetBattlerParty(battler)[partyIndexAI]; // Updates each turn current pokemon out in case of switches
+    // struct Pokemon *pokemonUser = &GetBattlerParty(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT))[partyIndexUser];
+    // u16 speciesAI = GetMonData(pokemonAI, MON_DATA_SPECIES); // Current pokemon AI out on field
+    // u16 speciesUser = GetMonData(pokemonUser, MON_DATA_SPECIES); 
+    // s32 damageTaken = 0, maxDamageTaken = 0;
+    // u8 effectiveness;
+    // u32 weather = AI_GetWeather(AI_DATA);
+    // DebugPrintfLevel(MGBA_LOG_WARN, "Current Pokemon of AI %S", GetSpeciesName(speciesAI));
+    // DebugPrintfLevel(MGBA_LOG_WARN, "Current Pokemon of User %S", GetSpeciesName(speciesUser));
+    // extern struct SaveBlock3 *gSaveBlock3Ptr;
+    //     for (u32 battlerId = 0; battlerId < MAX_BATTLERS; battlerId++){
+    //         for (u32 partyIndex = 0; partyIndex < MAX_TEAM; partyIndex++) {
+    //             if (gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex] != SPECIES_NONE) {
+    //             //DebugPrintfLevel(MGBA_LOG_WARN, "Known species of battler %d:", battlerId);
+    //             u16 species = gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex];
+    //                 if (speciesUser == species){
+                        // for (int moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++){
+                        //     u16 moveUsed = gSaveBlock3Ptr->knownMoves[battlerId][partyIndex][moveIndex];
+                        //     //DebugPrintfLevel(MGBA_LOG_WARN, "Move %S", gMovesInfo[moveUsed].name);
+                        //     if (moveUsed != MOVE_NONE && gMovesInfo[moveUsed].power != 0)
+                        //     {
+                        //         damageTaken = AI_CalcDamage(moveUsed, opposingBattler, battler, &effectiveness, FALSE, weather);
+                        //         if (damageTaken > maxDamageTaken)
+                        //             maxDamageTaken = damageTaken;
+                        //         //DebugPrintfLevel(MGBA_LOG_WARN, "Player Move %S and Damage it deals %d", gMovesInfo[moveUsed].name, damageTaken);
+                        //         //DebugPrintfLevel(MGBA_LOG_WARN, "Max Damage %d", maxDamageTaken);
+                        //         //bestMonId = GetBestMonIntegrated(party, firstId, lastId, battler, opposingBattler, battlerIn1, battlerIn2, switchAfterMonKOd);
+                        //     }
+                        //DebugPrintfLevel(MGBA_LOG_WARN, "Pokemon %S found against %S", GetSpeciesName(speciesUser), GetSpeciesName(species));
+                        //DebugPrintfLevel(MGBA_LOG_WARN, "Testing 1");
+                        bestMonId = GetBestMonIntegrated(party, firstId, lastId, battler, opposingBattler, battlerIn1, battlerIn2, switchAfterMonKOd);
+                        // //return bestMonId;
+                        //}
+                   // }
+               // }
+           // }
+        //}
         return bestMonId;
     }
+    // Get max damage mon could take
+    // for (i = 0; i < MAX_MON_MOVES; i++)
+    // {
+    //     playerMove = gBattleMons[opposingBattler].moves[i];
+    //     if (playerMove != MOVE_NONE && gMovesInfo[playerMove].power != 0)
+    //     {
+    //         damageTaken = AI_CalcDamage(playerMove, opposingBattler, battler, &effectiveness, FALSE, weather);
+    //         DebugPrintfLevel(MGBA_LOG_WARN, "Player Move %S and Damage it deals %S", gMovesInfo[playerMove].name, damageTaken);
+    //         DebugPrintfLevel(MGBA_LOG_WARN, "Max Damage %d", maxDamageTaken);
+    //         if (damageTaken > maxDamageTaken)
+    //             maxDamageTaken = damageTaken;
+    //     }
+    // }
+    // if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_ADAPTIVE_AI && !(gBattleTypeFlags & BATTLE_TYPE_DOUBLE)) // Double Battles aren't included in AI_FLAG_SMART_MON_CHOICE. Defaults to regular switch in logic
+    // {
+    //     bestMonId = GetBestMonIntegrated(party, firstId, lastId, battler, opposingBattler, battlerIn1, battlerIn2, switchAfterMonKOd);
+    //     DebugPrintfLevel(MGBA_LOG_WARN, "AI Pokemon %S", GetSpeciesName(speciesName));
+    //     return bestMonId;
+    // }
 
     // This all handled by the GetBestMonIntegrated function if the AI_FLAG_SMART_MON_CHOICES flag is set
     else

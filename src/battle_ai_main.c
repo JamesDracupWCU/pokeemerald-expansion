@@ -53,7 +53,7 @@ static s32 AI_Roaming(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_Safari(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_FirstBattle(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_DoubleBattle(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
-static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
+//static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 static s32 AI_PowerfulStatus(u32 battlerAtk, u32 battlerDef, u32 move, s32 score);
 
 static s32 (*const sBattleAiFuncTable[])(u32, u32, u32, s32) =
@@ -77,7 +77,7 @@ static s32 (*const sBattleAiFuncTable[])(u32, u32, u32, s32) =
     [16] = NULL,                     // Unused
     [17] = NULL,                     // Unused
     [18] = NULL,                     // Unused
-    [19] = AI_ADAPTIVE_AI,      // AI_FLAG_Adaptive_AI Flag
+    [19] = NULL, //AI_ADAPTIVE_AI,      // AI_FLAG_Adaptive_AI Flag
     [20] = NULL,                     // Unused
     [21] = NULL,                     // Unused
     [22] = NULL,                     // Unused
@@ -802,7 +802,7 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
 
     SetTypeBeforeUsingMove(move, battlerAtk);
     GET_MOVE_TYPE(move, moveType);
-
+    
     if (gMovesInfo[move].powderMove && !IsAffectedByPowder(battlerDef, aiData->abilities[battlerDef], aiData->holdEffects[battlerDef]))
         RETURN_SCORE_MINUS(10);
 
@@ -2592,18 +2592,17 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
         case EFFECT_PLACEHOLDER:
             return 0;   // cannot even select
     } // move effect checks
-
+    //DebugPrintfLevel(MGBA_LOG_WARN, "Check Bad Move %S, Score %d", gMovesInfo[move].name ,score);
     if (score < 0)
         score = 0;
-
     return score;
 }
 
 static s32 AI_TryToFaint(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
 {
     u32 movesetIndex = AI_THINKING_STRUCT->movesetIndex;
-
     if (IS_TARGETING_PARTNER(battlerAtk, battlerDef))
+        //DebugPrintfLevel(MGBA_LOG_WARN, "Targeting Partner, %d", score);
         return score;
 
     if (gMovesInfo[move].power == 0)
@@ -2611,18 +2610,23 @@ static s32 AI_TryToFaint(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
 
     if (CanIndexMoveFaintTarget(battlerAtk, battlerDef, movesetIndex, 0) && gMovesInfo[move].effect != EFFECT_EXPLOSION)
     {
-        if (AI_STRIKES_FIRST(battlerAtk, battlerDef, move))
+        if (AI_STRIKES_FIRST(battlerAtk, battlerDef, move)) {
             ADJUST_SCORE(FAST_KILL);
-        else
+            //DebugPrintfLevel(MGBA_LOG_WARN, "Fast Kill, %d", score);
+        }
+        else {
             ADJUST_SCORE(SLOW_KILL);
+            //DebugPrintfLevel(MGBA_LOG_WARN, "Slow Kill, %d", score);
+        }
     }
     else if (CanTargetFaintAi(battlerDef, battlerAtk)
             && GetWhichBattlerFaster(battlerAtk, battlerDef, TRUE) != AI_IS_FASTER
             && GetMovePriority(battlerAtk, move) > 0)
     {
         ADJUST_SCORE(LAST_CHANCE);
+        //DebugPrintfLevel(MGBA_LOG_WARN, "Last Chance, %d", score);
     }
-
+    //DebugPrintfLevel(MGBA_LOG_WARN, "Score %d", score);
     return score;
 }
 
@@ -3054,7 +3058,7 @@ static s32 AI_CompareDamagingMoves(u32 battlerAtk, u32 battlerDef, u32 currId)
 {
     u32 i;
     bool32 multipleBestMoves = FALSE;
-    s32 viableMoveScores[MAX_MON_MOVES];
+    s32 viableMoveScores[MAX_MON_MOVES]; // 4 moves
     s32 bestViableMoveScore;
     s32 noOfHits[MAX_MON_MOVES];
     s32 score = 0;
@@ -3062,16 +3066,18 @@ static s32 AI_CompareDamagingMoves(u32 battlerAtk, u32 battlerDef, u32 currId)
     u16 *moves = GetMovesArray(battlerAtk);
     bool8 isTwoTurnNotSemiInvulnerableMove[MAX_MON_MOVES];
 
-    for (i = 0; i < MAX_MON_MOVES; i++)
+    for (i = 0; i < MAX_MON_MOVES; i++) // for each of the 4 moves
     {
-        if (moves[i] != MOVE_NONE && gMovesInfo[moves[i]].power)
+        if (moves[i] != MOVE_NONE && gMovesInfo[moves[i]].power) // if move is not none and has base power
         {
-            noOfHits[i] = GetNoOfHitsToKOBattler(battlerAtk, battlerDef, i);
-            if (noOfHits[i] < leastHits && noOfHits[i] != 0)
+            noOfHits[i] = GetNoOfHitsToKOBattler(battlerAtk, battlerDef, i); 
+            //DebugPrintfLevel(MGBA_LOG_WARN, "Number of Hits for move %S: %d", gMovesInfo[moves[i]].name ,noOfHits[i]);
+            if (noOfHits[i] < leastHits && noOfHits[i] != 0) // if # of hits is less than leastHits (1000) and not 0 continue
             {
-                leastHits = noOfHits[i];
+                leastHits = noOfHits[i]; // leastHits now is # of hits
+                //DebugPrintfLevel(MGBA_LOG_WARN, "Least Hits %d", leastHits);
             }
-            viableMoveScores[i] = AI_SCORE_DEFAULT;
+            viableMoveScores[i] = AI_SCORE_DEFAULT; //Default score for all AI moves is 100
             isTwoTurnNotSemiInvulnerableMove[i] = IsTwoTurnNotSemiInvulnerableMove(battlerAtk, moves[i]);
         }
         else
@@ -3092,15 +3098,15 @@ static s32 AI_CompareDamagingMoves(u32 battlerAtk, u32 battlerDef, u32 currId)
     // 4. Better effect
 
     // Current move requires the least hits to KO. Compare with other moves.
-    if (leastHits == noOfHits[currId])
+    if (leastHits == noOfHits[currId]) // if leastHits equals the current noOfHits id parameters continue
     {
         for (i = 0; i < MAX_MON_MOVES; i++)
         {
-            if (i == currId)
+            if (i == currId) // if I is current ID continue
                 continue;
-            if (noOfHits[currId] == noOfHits[i])
+            if (noOfHits[currId] == noOfHits[i]) // if number of hits with current Id equals no of Hits from current move continue
             {
-                multipleBestMoves = TRUE;
+                multipleBestMoves = TRUE; 
                 // We need to make sure it's the current move which is objectively better.
                 if (isTwoTurnNotSemiInvulnerableMove[i] && !isTwoTurnNotSemiInvulnerableMove[currId])
                     viableMoveScores[i] -= 3;
@@ -3129,7 +3135,7 @@ static s32 AI_CompareDamagingMoves(u32 battlerAtk, u32 battlerDef, u32 currId)
         }
         // Turns out the current move deals the most dmg compared to the other 3.
         if (!multipleBestMoves)
-            ADJUST_SCORE(BEST_DAMAGE_MOVE);
+            ADJUST_SCORE(BEST_DAMAGE_MOVE); // Adjusting by BEST_DAMAGE_MOVE value of 1
         else
         {
             bestViableMoveScore = 0;
@@ -3140,10 +3146,10 @@ static s32 AI_CompareDamagingMoves(u32 battlerAtk, u32 battlerDef, u32 currId)
             }
             // Unless a better move was found increase score of current move
             if (viableMoveScores[currId] == bestViableMoveScore)
-                ADJUST_SCORE(BEST_DAMAGE_MOVE);
+                ADJUST_SCORE(BEST_DAMAGE_MOVE); // +1 to score
         }
     }
-
+    
     return score;
 }
 
@@ -3646,9 +3652,9 @@ static u32 AI_CalcMoveScore(u32 battlerAtk, u32 battlerDef, u32 move)
         if (AI_ShouldSetUpHazards(battlerAtk, battlerDef, aiData));
         {
             if (gDisableStructs[battlerAtk].isFirstTurn)
-                ADJUST_SCORE(BEST_EFFECT);
+                ADJUST_SCORE(BEST_EFFECT); // Increment score by 6
             else
-                ADJUST_SCORE(DECENT_EFFECT);
+                ADJUST_SCORE(DECENT_EFFECT); // Increment score by 2
         }
         break;
     case EFFECT_FORESIGHT:
@@ -4401,7 +4407,7 @@ static u32 AI_CalcMoveScore(u32 battlerAtk, u32 battlerDef, u32 move)
                 case MOVE_EFFECT_SPD_PLUS_2:
                 case MOVE_EFFECT_SPD_PLUS_1:
                     if (aiData->abilities[battlerAtk] != ABILITY_CONTRARY && !AI_STRIKES_FIRST(battlerAtk, battlerDef, move))
-                        ADJUST_SCORE(GOOD_EFFECT);
+                        ADJUST_SCORE(GOOD_EFFECT); // +4 to score
                     break;
                 case MOVE_EFFECT_ATK_PLUS_1:
                 case MOVE_EFFECT_DEF_PLUS_1:
@@ -4574,9 +4580,9 @@ static u32 AI_CalcMoveScore(u32 battlerAtk, u32 battlerDef, u32 move)
                     if (AI_ShouldSetUpHazards(battlerAtk, battlerDef, aiData));
                     {
                         if (gDisableStructs[battlerAtk].isFirstTurn)
-                            ADJUST_SCORE(BEST_EFFECT);
+                            ADJUST_SCORE(BEST_EFFECT); // +6 to score
                         else
-                            ADJUST_SCORE(DECENT_EFFECT);
+                            ADJUST_SCORE(DECENT_EFFECT); // +2 to score
                     }
                     break;
                 case MOVE_EFFECT_FEINT:
@@ -4712,7 +4718,7 @@ static s32 AI_SetupFirstTurn(u32 battlerAtk, u32 battlerDef, u32 move, s32 score
     case EFFECT_SNOWSCAPE:
     case EFFECT_GEOMANCY:
     case EFFECT_VICTORY_DANCE:
-        ADJUST_SCORE(DECENT_EFFECT);
+        ADJUST_SCORE(DECENT_EFFECT); // +2
         break;
     case EFFECT_HIT:
     {
@@ -5196,44 +5202,60 @@ static s32 AI_CheckViability(u32 battlerAtk, u32 battlerDef, u32 move, s32 score
             ADJUST_SCORE(-20);
         else
             score += AI_CompareDamagingMoves(battlerAtk, battlerDef, AI_THINKING_STRUCT->movesetIndex);
+            //DebugPrintfLevel(MGBA_LOG_WARN, "1st Viability %S %d", gMovesInfo[move].name ,score);
     }
 
     // Calculates score based on effects of a move
     score += AI_CalcMoveScore(battlerAtk, battlerDef, move);
-    //DebugPrintfLevel(MGBA_LOG_WARN, "Move: %S", gMovesInfo[move].name);
-    //DebugPrintfLevel(MGBA_LOG_WARN, "Move Score: %d", score);
+    //DebugPrintfLevel(MGBA_LOG_WARN, "2nd Viability %S %d", gMovesInfo[move].name ,score);
+    DebugPrintfLevel(MGBA_LOG_WARN, "AI Move: %S and Score: %d", gMovesInfo[move].name, score);
     return score;
 }
 
-// Store all moves used from both sides during battle.
-// Also store the Damage or effect for each move respectively
-// 
-static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score) {
-    extern struct SaveBlock3 *gSaveBlock3Ptr;
-    
-    for (u32 battlerId = 0; battlerId < MAX_BATTLERS; battlerId++) {
-        for (u32 partyIndex = 0; partyIndex < MAX_TEAM; partyIndex++) {
-            if (gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex] != SPECIES_NONE) {
-                DebugPrintfLevel(MGBA_LOG_WARN, "Known species of battler %d:", battlerId);
-                u16 species = gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex];
+// Retrieve all stored moves used from both sides during prior battle.
+// static s32 AI_ADAPTIVE_AI(u32 battlerAtk, u32 battlerDef, u32 move, s32 score) {
+    // u32 partyIndexAI = gBattlerPartyIndexes[battlerAtk]; // Retrieves the current AI pokemon out on field
+    // u32 partyIndexUser = gBattlerPartyIndexes[battlerDef]; // Retrieves the current User pokemon out on field
+    // struct Pokemon *pokemonAI = &GetBattlerParty(battlerAtk)[partyIndexAI]; // Updates each turn current pokemon out in case of switches
+    // struct Pokemon *pokemonUser = &GetBattlerParty(battlerDef)[partyIndexUser];
+    // u16 speciesAI = GetMonData(pokemonAI, MON_DATA_SPECIES); // Current pokemon AI out on field
+    // u16 speciesUser = GetMonData(pokemonUser, MON_DATA_SPECIES); 
+    // DebugPrintfLevel(MGBA_LOG_WARN, "Current Pokemon of AI %S", GetSpeciesName(speciesAI));
+    // DebugPrintfLevel(MGBA_LOG_WARN, "Current Pokemon of User %S", GetSpeciesName(speciesUser));
+    // extern struct SaveBlock3 *gSaveBlock3Ptr;
+    // for (u32 battlerId = 0; battlerId < MAX_BATTLERS; battlerId++) {
+    //     for (u32 partyIndex = 0; partyIndex < MAX_TEAM; partyIndex++) {
+    //         if (gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex] != SPECIES_NONE) {
+    //             //DebugPrintfLevel(MGBA_LOG_WARN, "Known species of battler %d:", battlerId);
+    //             u16 species = gSaveBlock3Ptr->knownSpecies[battlerId][partyIndex];
+    //             //DebugPrintfLevel(MGBA_LOG_WARN, "- %S Typing: %S %S", GetSpeciesName(species), 
+    //                              // gTypesInfo[gSaveBlock3Ptr->knownTyping[battlerId][partyIndex]].name, 
+    //                              // gTypesInfo[gSaveBlock3Ptr->knownTyping2[battlerId][partyIndex]].name);
+    //             if (speciesUser == species){
+    //                 //DebugPrintfLevel(MGBA_LOG_WARN, "Known moves of %S and typing:", GetSpeciesName(species));
+    //                 // for (int moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++) {
+    //                 //     u16 moveUsed = gSaveBlock3Ptr->knownMoves[battlerId][partyIndex][moveIndex]; // Moves from prior match
+    //                 //     //AI_CheckViability(battlerAtk, battlerDef, moveUsed, score);
 
-                DebugPrintfLevel(MGBA_LOG_WARN, "- %S Typing: %S %S", GetSpeciesName(species), 
-                                 gTypesInfo[gSaveBlock3Ptr->knownTyping[battlerId][partyIndex]].name, 
-                                 gTypesInfo[gSaveBlock3Ptr->knownTyping2[battlerId][partyIndex]].name);
+    //                 //     DebugPrintfLevel(MGBA_LOG_WARN, "%S and Score: %d", gMovesInfo[move].name, AI_CheckViability(battlerAtk, battlerDef, move, score));
+    //                 //     // if (moveUsed != MOVE_NONE) {
+    //                 //     //     //u16 moveType = gMovesInfo[moveUsed].type;
+    //                 //     //     //DebugPrintfLevel(MGBA_LOG_WARN, "- %S %S", gMovesInfo[moveUsed].name, gTypesInfo[moveType].name);
+    //                 //     //  DebugPrintfLevel(MGBA_LOG_WARN, "With %S if Move: %S chosen is AI safe against %S if User chooses Move: %S", GetSpeciesName(speciesAI)
+    //                 //     //  , gMovesInfo[move].name 
+    //                 //     //  , GetSpeciesName(speciesUser), gMovesInfo[moveUsed].name);
+    //                 //     //     // Scores for AI moves
+    //                 //     //     AI_CheckViability(battlerAtk, battlerDef, moveUsed, score);
+    //                 //     // } else {
+    //                 //     //     break;
+    //                 //     // }    
+    //                 // }
+    //             }
+    //         }
+    //     }
+    // }
+//     // DebugPrintfLevel(MGBA_LOG_WARN, "Adaptive %d", score);
+//     return score;
+// }
 
-                DebugPrintfLevel(MGBA_LOG_WARN, "Known moves of %S and typing:", GetSpeciesName(species));
-                for (int moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++) {
-                    u16 moveUsed = gSaveBlock3Ptr->knownMoves[battlerId][partyIndex][moveIndex];
-                    if (moveUsed != MOVE_NONE) {
-                        u16 moveType = gMovesInfo[moveUsed].type;
-                        DebugPrintfLevel(MGBA_LOG_WARN, "- %S %S", gMovesInfo[moveUsed].name, gTypesInfo[moveType].name);
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    return 0;
-}
 
