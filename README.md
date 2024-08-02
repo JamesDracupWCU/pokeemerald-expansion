@@ -4,5 +4,3 @@ Simple Implementation of Case-Based Reasoning (CBR) for pokemon battle rematches
 -- Description of the implementation in Progress ... 
 
 
-https://github.com/user-attachments/assets/14d7c58b-76d4-4df4-b5a6-5e92234ebb50
-
