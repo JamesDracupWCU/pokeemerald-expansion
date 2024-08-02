@@ -3,4 +3,4 @@ Simple Implementation of Case-Based Reasoning (CBR) for pokemon battle rematches
 
 -- Description of the implementation in Progress ... 
 
-Recordings of CBR project located in `Case-Based Reasoning Project Videos`
+Recordings of CBR project located in `Case-Based Reasoning Project Videos` (Still in Progress to get part 2 uploaded)
