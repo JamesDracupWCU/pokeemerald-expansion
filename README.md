@@ -7,7 +7,7 @@ Simple Implementation of Case-Based Reasoning (CBR) for pokemon battle rematches
 Recordings of the CBR project is located in `Case-Based Reasoning Project Videos`.
 Inside that folder is 3 parts of an entire video which are:
 - Part 1 Contains the default battle initially with the NPC before any CBR is active.
-- Part 2 Rematch of NPC with the CBR implementation based on AI losing from prior match
+- Part 2 Rematch of NPC with CBR implementation based on AI losing from prior match
 - Part 3 Rematch of NPC with CBR implementation based on AI wining from prior match
 
 # Project Description
