@@ -19,6 +19,12 @@ The purpose of each are:
 3. Reuse: Apply that retrieved case to the current task at hand.
 4. Revise: Check the effectiveness of applying said case and to update and store the new gained experience.
 
-For my situation, which is for Pokemon Emerald Battles, the four steps are followed but are modified to fit into that usage for the AI of the game. I modified LittleRoot Town (So its scripts and JSON files) to implement all the Gym Leaders into the map and did all of my testing and implementation using Roxanne. For this I gave her a full team of 6 that scaled with my teams levels, and some healing items. 
+For my situation, which is for Pokemon Emerald Battles, the four steps are followed but are modified to fit into that usage for the AI of the game. I modified LittleRoot Town (So its scripts and JSON files) to implement all the Gym Leaders into the map and did all of my testing and implementation using Roxanne. For this I gave her a full team of 6 that scaled with my teams levels, and some healing items. This also only works for post game matches effectively so future work needed to make it have ability to check users and ai's party evolutions to modify its decision-making.
 
- 
+### Retain
+
+### Retrieve
+
+### Reuse
+
+### Revise
