@@ -16,7 +16,7 @@ Case-Based Reasoning is a form of Artificial Intelligence that focuses on an exp
 In order for the implementation of Case-Based Reasoning to occur there are four foundational steps that are needed. These four steps are Retain, Retrieve, Reuse, and Revise (The four Rs) and each of them play a role of varying size depending on the situation at hand that we wish to create it for. 
 The purpose of each are:
 1. Retain: Acquire information of the situation during execution or fed old data that is already stored so that it can be used for future occurences. 
-2. Retrieve: Gather the best similar data from the storage that is being used to retain such information. 
+2. Retrieve: Gather the best similar data from the storage. 
 3. Reuse: Apply that retrieved case to the current task at hand.
 4. Revise: Check the effectiveness of applying said case and to update and store the new gained experience.
 
