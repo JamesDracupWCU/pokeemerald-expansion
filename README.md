@@ -4,7 +4,7 @@
 Simple Implementation of Case-Based Reasoning (CBR) for pokemon battle rematches of the AI in the game. Not advanced but a foundation based on my current understanding of the pillars of CBR (Retain, Retrieve, Reuse, and Revise) and the code in this Decomp. Future work from either me or whoever wishes to work on it with better experience with the code or understanding to make it more advanced is encouraged since this isn't a final form of the project. Some Future work can be to make the storage more dynamic since it only can hold a constant value amount of information for both the one gym leader and the users team based on SaveBlock3 in `global.h`.
 
 ## Important
-Recordings of the CBR project is located in `Case-Based Reasoning Project Videos`.
+Recordings of the CBR project is located in [`Case-Based Reasoning Project Videos`](https://github.com/JamesDracupWCU/pokeemerald-expansion/tree/AI/Case-Based%20Reasoning%20Project%20Videos).
 Inside that folder is 3 parts of an entire video which are:
 - Part 1 Contains the default battle initially with the NPC before any CBR is active.
 - Part 2 Rematch of NPC with CBR implementation based on AI losing from prior match
